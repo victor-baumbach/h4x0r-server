@@ -20,7 +20,10 @@ namespace h4x0r_server
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Log("Server initialising...");
+            m_Logger = new Logger();
+            Logger.AddTarget(LogToTextBox);
+
+            Logger.Write("Server initialising...");
             string filename = @"C:\Users\Valman\Dropbox\Dev\h4x0r\database\database.sqlite3";
             m_DatabaseConnection = new SQLiteConnection("Data Source=" + filename + ";Version=3;");
             //string accountsSql = "select * from Accounts;";
@@ -31,12 +34,15 @@ namespace h4x0r_server
                 //var da = new SQLiteDataAdapter(accountsSql, m_DatabaseConnection);
                 //da.Fill(ds);
                 //dataGridView1.DataSource = ds.Tables[0].DefaultView;
-                Log("Connection to database estabilished.");
+                Logger.Write("Connection to database estabilished.");
             }
             catch (Exception)
             {
                 throw;
             }
+
+            m_SocketListener = new AsyncSocketListener();
+            AsyncSocketListener.StartListening();
         }
 
         private SQLiteConnection m_DatabaseConnection;
@@ -46,10 +52,18 @@ namespace h4x0r_server
             m_DatabaseConnection.Close();
         }
 
-        private void Log(string text)
+        private void LogToTextBox(string text)
         {
-            DateTime d = DateTime.Now;
-            textBoxLog.Text += "[" + d.ToShortDateString() + " " + d.ToShortTimeString() + "]: " + text + Environment.NewLine;
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action<string>(LogToTextBox), new object[] { text });
+                return;
+            }
+
+            textBoxLog.Text += text;
         }
+
+        private Logger m_Logger;
+        private AsyncSocketListener m_SocketListener;
     }
 }
