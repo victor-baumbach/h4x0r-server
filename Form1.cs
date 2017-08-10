@@ -23,33 +23,34 @@ namespace h4x0r_server
             m_Logger = new Logger();
             Logger.AddTarget(LogToTextBox);
 
-            Logger.Write("Server initialising...");
-            string filename = @"C:\Users\Valman\Dropbox\Dev\h4x0r\database\database.sqlite3";
-            m_DatabaseConnection = new SQLiteConnection("Data Source=" + filename + ";Version=3;");
-            //string accountsSql = "select * from Accounts;";
-            try
-            {
-                m_DatabaseConnection.Open();
-                //DataSet ds = new DataSet();
-                //var da = new SQLiteDataAdapter(accountsSql, m_DatabaseConnection);
-                //da.Fill(ds);
-                //dataGridView1.DataSource = ds.Tables[0].DefaultView;
-                Logger.Write("Connection to database estabilished.");
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            Server.Initialise();
 
-            m_SocketListener = new AsyncSocketListener();
-            AsyncSocketListener.StartListening();
+
+            //string filename = @"C:\Users\Valman\Dropbox\Dev\h4x0r\database\database.sqlite3";
+            //m_DatabaseConnection = new SQLiteConnection("Data Source=" + filename + ";Version=3;");
+            ////string accountsSql = "select * from Accounts;";
+            //try
+            //{
+            //    m_DatabaseConnection.Open();
+            //    //DataSet ds = new DataSet();
+            //    //var da = new SQLiteDataAdapter(accountsSql, m_DatabaseConnection);
+            //    //da.Fill(ds);
+            //    //dataGridView1.DataSource = ds.Tables[0].DefaultView;
+            //    Logger.Write("Connection to database estabilished.");
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
-        private SQLiteConnection m_DatabaseConnection;
+        //private SQLiteConnection m_DatabaseConnection;
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            m_DatabaseConnection.Close();
+            Logger.RemoveTarget(LogToTextBox);
+            Server.Shutdown();
+            //m_DatabaseConnection.Close();
         }
 
         private void LogToTextBox(string text)
@@ -64,6 +65,5 @@ namespace h4x0r_server
         }
 
         private Logger m_Logger;
-        private AsyncSocketListener m_SocketListener;
     }
 }
