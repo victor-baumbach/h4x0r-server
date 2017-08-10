@@ -15,6 +15,11 @@ namespace h4x0r_server
             m_Socket = socket;
         }
 
+        public Socket GetSocket()
+        {
+            return m_Socket;
+        }
+
         private Socket m_Socket;
     }
 }

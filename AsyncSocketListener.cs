@@ -34,56 +34,21 @@ namespace h4x0r_server
 
         public static void StartListening()
         {
-            m_ListenThread = new Thread(Listen);
-            m_ListenThread.Start();
-        }
-
-        public static void StopListening()
-        {
-            m_Listening = false;
-
-            // Block until the listening thread is done.
-            while (IsListening())
-            {
-
-            }
-        }
-
-        public static bool IsListening()
-        {
-            return (m_ListenThread != null && m_ListenThread.IsAlive);
-        }
-
-        private static void Listen()
-        {
-            m_Listening = true;
-
-            // Data buffer for incoming data.  
-            byte[] bytes = new Byte[1024];
-
-            // Establish the local endpoint for the socket.  
-            IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
-            IPAddress ipAddress = ipHostInfo.AddressList[0];
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 13370);
-
-            // Create a TCP/IP socket.  
-            Socket listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
-            // Bind the socket to the local endpoint and listen for incoming connections.  
             try
             {
-                listener.Bind(localEndPoint);
-                listener.Listen(100);
+                // Create a TCP/IP socket. This supports both IPv4 and IPv6 on the same socket.
+                m_Listener = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
+                m_Listener.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, false);
+                IPEndPoint localEndPoint = new IPEndPoint(IPAddress.IPv6Any, 13370);
 
-                Logger.Write("Server listening for connections at {0}", localEndPoint);
+                // Bind the socket to the local endpoint and listen for incoming connections.  
+                m_Listener.Bind(localEndPoint);
+                m_Listener.Listen(100);
 
-                while (m_Listening)
-                {
-                    Socket socket = listener.Accept();
-                    OnConnectionAccepted(socket);
-                }
+                Logger.Write("Server listening for connections on port {0}.", localEndPoint.Port);
 
-                Logger.Write("Server no longer listening for connections.");
+                // Start an asynchronous socket to listen for connections.  
+                m_Listener.BeginAccept(new AsyncCallback(AcceptCallback), m_Listener);
             }
             catch (Exception e)
             {
@@ -91,10 +56,84 @@ namespace h4x0r_server
             }
         }
 
+        public static void StopListening()
+        {
+            if (m_Listener != null)
+            {
+                if (m_Listener.Connected)
+                {
+                    m_Listener.Shutdown(SocketShutdown.Both);
+                }
+
+                m_Listener.Close();
+                Logger.Write("Server no longer listening for connections.");
+            }
+        }
+
+        public static void AcceptCallback(IAsyncResult ar)
+        {
+            try
+            {
+                // Get the socket that handles the client request.  
+                Socket handler = m_Listener.EndAccept(ar);
+
+                // Notify the server that we have accepted a connection.
+                OnConnectionAccepted(handler);
+
+                // Create the state object, which has the receive buffer for this socket.
+                StateObject state = new StateObject();
+                state.workSocket = handler;
+
+                // Setup asynchronous reading for the client's socket.
+                handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReceiveCallback), state);
+
+                // Now that we have handled the Accept, go back to listening for additional connections.
+                m_Listener.BeginAccept(new AsyncCallback(AcceptCallback), m_Listener);
+            }
+            catch (ObjectDisposedException e)
+            {
+                // The ObjectDisposedException is triggered if our listener socket has been closed.
+                // This is expected behaviour.
+            }
+
+        }
+
+        public static void ReceiveCallback(IAsyncResult ar)
+        {
+            String content = String.Empty;
+
+            // Retrieve the state object and the handler socket  
+            // from the asynchronous state object.  
+            StateObject state = (StateObject)ar.AsyncState;
+            Socket handler = state.workSocket;
+
+            // Read data from the client socket.   
+            int bytesRead = handler.EndReceive(ar);
+            if (bytesRead > 0)
+            {
+                // There  might be more data, so store the data received so far.  
+                //state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));
+
+                Logger.Write("Read {0} bytes from socket.", bytesRead);
+
+                // Keep receiving data...
+                handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReceiveCallback), state);
+            }
+            else
+            {
+                // If we read 0 bytes, then we've lost our connection.
+                handler.Shutdown(SocketShutdown.Both);
+                OnConnectionLost(handler);
+                handler.Close();
+            }
+        }
+
         public delegate void ConnectionAcceptedDelegate(Socket socket);
         public static ConnectionAcceptedDelegate OnConnectionAccepted;
 
-        private static Thread m_ListenThread = null;
-        private static bool m_Listening = false;
+        public delegate void ConnectionLostDelegate(Socket socket);
+        public static ConnectionLostDelegate OnConnectionLost;
+
+        private static Socket m_Listener;
     }
 }

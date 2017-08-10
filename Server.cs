@@ -17,6 +17,7 @@ namespace h4x0r_server
             m_Clients = new List<Client>();
             m_SocketListener = new AsyncSocketListener();
             AsyncSocketListener.OnConnectionAccepted = OnConnectionAccepted;
+            AsyncSocketListener.OnConnectionLost = OnConnectionLost;
             AsyncSocketListener.StartListening();
 
             m_Initialised = true;
@@ -39,7 +40,24 @@ namespace h4x0r_server
         {
             Client client = new Client(socket);
             m_Clients.Add(client);
-            Logger.Write("Connection accepted.");
+
+            IPEndPoint remoteEndpoint = (IPEndPoint)socket.RemoteEndPoint;
+            Logger.Write("Connection accepted from {0}.", remoteEndpoint.Address);
+        }
+
+        public static void OnConnectionLost(Socket socket)
+        {
+            IPEndPoint remoteEndpoint = (IPEndPoint)socket.RemoteEndPoint;
+            Logger.Write("Connection lost from {0}.", remoteEndpoint.Address);
+
+            foreach (Client client in m_Clients)
+            {
+                if (client.GetSocket() == socket)
+                {
+                    m_Clients.Remove(client);
+                    break;
+                }
+            }
         }
 
         private static bool m_Initialised;
