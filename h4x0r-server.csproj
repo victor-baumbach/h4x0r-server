@@ -41,8 +41,8 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\EntityFramework.6.0.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="protobuf-net, Version=2.3.2.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
-      <HintPath>packages\protobuf-net.2.3.2\lib\net40\protobuf-net.dll</HintPath>
+    <Reference Include="FlatBuffers">
+      <HintPath>.\FlatBuffers.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -76,6 +76,8 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Logger.cs" />
+    <Compile Include="Messages.cs" />
+    <Compile Include="MessagesInternal.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server.cs" />
@@ -92,6 +94,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="MessagesInternal.fbs" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -114,4 +117,15 @@
     </PropertyGroup>
     <Error Condition="!Exists('packages\System.Data.SQLite.Core.1.0.105.2\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\System.Data.SQLite.Core.1.0.105.2\build\net46\System.Data.SQLite.Core.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>echo Copying Messages.cs to Unity assets...
+copy $(SolutionDir)\Messages.cs D:\h4x0r\Assets
+
+echo Copying MessagesInternal.cs to Unity assets...
+copy $(SolutionDir)\MessagesInternal.cs D:\h4x0r\Assets</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>echo flatc: Generating MessagesInternal.cs...
+$(SolutionDir)\flatc  -o $(SolutionDir) --csharp $(SolutionDir)\MessagesInternal.fbs --gen-onefile</PreBuildEvent>
+  </PropertyGroup>
 </Project>

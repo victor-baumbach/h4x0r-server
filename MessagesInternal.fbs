@@ -1,0 +1,37 @@
+namespace h4x0r.MessagesInternal;
+
+union MessageContainer 
+{ 
+	CreateAccountMessage,
+	LoginMessage
+}
+
+table MessageBase 
+{
+	data:MessageContainer;	
+}
+ 
+table CreateAccountMessage 
+{
+	username:string;
+	email:string;
+	password:string;
+}
+
+table LoginMessage 
+{
+	username:string;
+	password:string;
+}
+
+table LoginSuccessfulMessage
+{
+	placeholder:bool;
+}
+
+table LoginFailedMessage
+{
+	placeholder:bool;
+}
+ 
+root_type MessageBase;

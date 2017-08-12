@@ -3,6 +3,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using FlatBuffers;
+using h4x0r.MessagesInternal;
 
 namespace h4x0r_server
 {
@@ -90,7 +92,7 @@ namespace h4x0r_server
                 // Now that we have handled the Accept, go back to listening for additional connections.
                 m_Listener.BeginAccept(new AsyncCallback(AcceptCallback), m_Listener);
             }
-            catch (ObjectDisposedException e)
+            catch (ObjectDisposedException)
             {
                 // The ObjectDisposedException is triggered if our listener socket has been closed.
                 // This is expected behaviour.
@@ -111,10 +113,16 @@ namespace h4x0r_server
             int bytesRead = handler.EndReceive(ar);
             if (bytesRead > 0)
             {
-                // There  might be more data, so store the data received so far.  
-                //state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));
+                // We expect anything being read from this socket to be a message.
+                // If it isn't, kill the connection.
+                if (ProcessMessage(state.buffer) == false)
+                {
+                    Logger.Write("Invalid message received, terminating connection.");
 
-                Logger.Write("Read {0} bytes from socket.", bytesRead);
+                    handler.Shutdown(SocketShutdown.Both);
+                    OnConnectionLost(handler);
+                    handler.Close();
+                }
 
                 // Keep receiving data...
                 handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReceiveCallback), state);
@@ -126,6 +134,34 @@ namespace h4x0r_server
                 OnConnectionLost(handler);
                 handler.Close();
             }
+        }
+
+        private static bool ProcessMessage(byte[] buffer)
+        {
+            // The messages always have the same structure:
+            // A MessageBase which contains an union of all the valid messages.
+            ByteBuffer bb = new ByteBuffer(buffer);
+
+            MessageBase messageBase = MessageBase.GetRootAsMessageBase(bb);
+            switch (messageBase.DataType)
+            {
+                case MessageContainer.CreateAccountMessage:
+                    {
+                        CreateAccountMessage? message = messageBase.Data<CreateAccountMessage>();
+                        if (message == null) return false;
+                        break;
+                    }
+                case MessageContainer.LoginMessage:
+                    {
+                        LoginMessage? message = messageBase.Data<LoginMessage>();
+                        if (message == null) return false;
+                        break;
+                    }
+                default:
+                    return false;
+            }
+
+            return true;
         }
 
         public delegate void ConnectionAcceptedDelegate(Socket socket);
