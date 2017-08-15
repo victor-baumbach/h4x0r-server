@@ -18,6 +18,13 @@ table CreateAccountMessage
 	password:string;
 }
 
+// Must be kept in sync with the enum in Messages.cs
+enum CreateAccountResult : byte { Success = 0, AlreadyExists }
+table CreateAccountResultMessage
+{
+	result:CreateAccountResult;
+}
+
 table LoginMessage 
 {
 	username:string;

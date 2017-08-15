@@ -14,6 +14,7 @@ namespace h4x0r_server
         {
             Logger.Write("Server initialising...");
 
+            m_Database = new Database();
             m_Clients = new List<Client>();
             m_SocketListener = new AsyncSocketListener();
             AsyncSocketListener.OnConnectionAccepted = OnConnectionAccepted;
@@ -31,6 +32,8 @@ namespace h4x0r_server
             }
 
             AsyncSocketListener.StopListening();
+
+            m_Database.Shutdown();
 
             Logger.Write("Server shutdown.");
             m_Initialised = false;
@@ -60,8 +63,23 @@ namespace h4x0r_server
             }
         }
 
+        public static h4x0r.Messages.CreateAccountResult CreateAccount(string username, string email, string password)
+        {
+            Account account = m_Database.GetAccount(username);
+            if (account != null)
+            {
+                return h4x0r.Messages.CreateAccountResult.AlreadyExists;
+            }
+            else
+            {
+                // TODO: Actually create account.
+                return h4x0r.Messages.CreateAccountResult.Success;
+            }
+        }
+
         private static bool m_Initialised;
         private static AsyncSocketListener m_SocketListener;
         private static List<Client> m_Clients;
+        private static Database m_Database;
     }
 }

@@ -15,6 +15,12 @@ public enum MessageContainer : byte
  LoginMessage = 2,
 };
 
+public enum CreateAccountResult : sbyte
+{
+ Success = 0,
+ AlreadyExists = 1,
+};
+
 public struct MessageBase : IFlatbufferObject
 {
   private Table __p;
@@ -80,6 +86,32 @@ public struct CreateAccountMessage : IFlatbufferObject
   public static Offset<CreateAccountMessage> EndCreateAccountMessage(FlatBufferBuilder builder) {
     int o = builder.EndObject();
     return new Offset<CreateAccountMessage>(o);
+  }
+};
+
+public struct CreateAccountResultMessage : IFlatbufferObject
+{
+  private Table __p;
+  public ByteBuffer ByteBuffer { get { return __p.bb; } }
+  public static CreateAccountResultMessage GetRootAsCreateAccountResultMessage(ByteBuffer _bb) { return GetRootAsCreateAccountResultMessage(_bb, new CreateAccountResultMessage()); }
+  public static CreateAccountResultMessage GetRootAsCreateAccountResultMessage(ByteBuffer _bb, CreateAccountResultMessage obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
+  public void __init(int _i, ByteBuffer _bb) { __p.bb_pos = _i; __p.bb = _bb; }
+  public CreateAccountResultMessage __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+
+  public CreateAccountResult Result { get { int o = __p.__offset(4); return o != 0 ? (CreateAccountResult)__p.bb.GetSbyte(o + __p.bb_pos) : CreateAccountResult.Success; } }
+
+  public static Offset<CreateAccountResultMessage> CreateCreateAccountResultMessage(FlatBufferBuilder builder,
+      CreateAccountResult result = CreateAccountResult.Success) {
+    builder.StartObject(1);
+    CreateAccountResultMessage.AddResult(builder, result);
+    return CreateAccountResultMessage.EndCreateAccountResultMessage(builder);
+  }
+
+  public static void StartCreateAccountResultMessage(FlatBufferBuilder builder) { builder.StartObject(1); }
+  public static void AddResult(FlatBufferBuilder builder, CreateAccountResult result) { builder.AddSbyte(0, (sbyte)result, 0); }
+  public static Offset<CreateAccountResultMessage> EndCreateAccountResultMessage(FlatBufferBuilder builder) {
+    int o = builder.EndObject();
+    return new Offset<CreateAccountResultMessage>(o);
   }
 };
 

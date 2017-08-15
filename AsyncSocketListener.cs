@@ -149,6 +149,9 @@ namespace h4x0r_server
                     {
                         CreateAccountMessage? message = messageBase.Data<CreateAccountMessage>();
                         if (message == null) return false;
+
+                        h4x0r.Messages.CreateAccountResult result = Server.CreateAccount(message.Value.Username, message.Value.Email, message.Value.Password);
+                        Logger.Write("Account creation result: " + result.ToString());
                         break;
                     }
                 case MessageContainer.LoginMessage:
