@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Data;
 using System.Data.SQLite;
+using System.Threading;
 
 namespace h4x0r_server
 {
@@ -19,6 +19,8 @@ namespace h4x0r_server
             {
                 throw;
             }
+
+            m_NodesTableMutex = new Mutex();
         }
 
         public void Shutdown()
@@ -63,6 +65,50 @@ namespace h4x0r_server
             return null;
         }
 
+        public Node CreateNode(Node.Type type)
+        {
+            m_NodesTableMutex.WaitOne();
+
+            Node.Address address = CreateAddress();
+            Node node = new Node(type, address);
+
+            // TODO: Insert node into Nodes table
+
+            m_NodesTableMutex.ReleaseMutex();
+
+            return node;
+        }
+
+        private Node.Address CreateAddress()
+        {
+            while (true)
+            {
+                Node.Address address = new Node.Address();
+
+                string accountsSql = "SELECT * from Nodes WHERE Address = @address;";
+                try
+                {
+                    SQLiteCommand command = new SQLiteCommand(accountsSql, m_DatabaseConnection);
+                    command.Parameters.AddWithValue("@address", address.Value);
+
+                    SQLiteDataReader reader = command.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        return address;
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
+
         private SQLiteConnection m_DatabaseConnection;
+        private Mutex m_NodesTableMutex;
     }
 }

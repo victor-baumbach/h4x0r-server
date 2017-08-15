@@ -80,6 +80,8 @@
     <Compile Include="Logger.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="MessagesInternal.cs" />
+    <Compile Include="Node\Address.cs" />
+    <Compile Include="Node\Node.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server.cs" />
