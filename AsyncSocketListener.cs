@@ -21,8 +21,6 @@ namespace h4x0r_server
         public const int BufferSize = 1024;
         // Receive buffer.  
         public byte[] buffer = new byte[BufferSize];
-        // Received data string.  
-        public StringBuilder sb = new StringBuilder();
     }
 
     public class AsyncSocketListener
