@@ -8,13 +8,6 @@ namespace h4x0r_server
 {
     partial class Node
     {
-        public Node(Type type, Address address)
-        {
-            m_Type = type;
-            m_Address = address;
-            m_Terminated = false;
-        }
-
         public enum Type
         {
             Gateway,
@@ -25,10 +18,10 @@ namespace h4x0r_server
             Decoy
         }
 
-        UInt64 m_ID;
-        Address m_Address;
-        Type m_Type;
-        bool m_Terminated;
+        public UInt64 ID { get; set; }
+        public Address NodeAddress { get; set; }
+        public Type NodeType { get; set; }
+        public bool Terminated { get; set; }
     }
 }
 

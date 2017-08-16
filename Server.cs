@@ -22,6 +22,11 @@ namespace h4x0r_server
             AsyncSocketListener.StartListening();
 
             m_Initialised = true;
+
+            for (int i = 0; i < 5; ++i)
+            {
+                m_Database.CreateNode(Node.Type.Terminal);
+            }
         }
 
         public static void Shutdown()
@@ -72,7 +77,7 @@ namespace h4x0r_server
             }
             else
             {
-                // TODO: Actually create account.
+                m_Database.CreateAccount(username, email, password);
                 return h4x0r.Messages.CreateAccountResult.Success;
             }
         }

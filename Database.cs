@@ -46,13 +46,7 @@ namespace h4x0r_server
                     account.Reputation = reader.GetInt64(reader.GetOrdinal("Reputation"));
                     account.Credits = reader.GetInt64(reader.GetOrdinal("Credits"));
                     account.Banned = reader.GetBoolean(reader.GetOrdinal("Banned"));
-
-                    // This row can be null if the player hasn't been assigned a gateway yet.
-                    int gatewayIDRow = reader.GetOrdinal("GatewayID");
-                    if (reader.IsDBNull(gatewayIDRow) == false)
-                    {
-                        account.GatewayID = reader.GetString(gatewayIDRow);
-                    }
+                    account.NodeID = (UInt64)reader.GetInt64(reader.GetOrdinal("NodeID"));
 
                     return account;
                 }
@@ -65,14 +59,74 @@ namespace h4x0r_server
             return null;
         }
 
+        public Account CreateAccount(string username, string email, string password)
+        {
+            Node node = CreateNode(Node.Type.Gateway);
+
+            Account account = new Account();
+            account.Username = username;
+            account.Email = email;
+            account.Password = password;
+            account.NodeID = node.ID;
+            account.Reputation = 0;
+            account.Credits = 1000;
+            account.Banned = false;
+
+            string accountSql = "INSERT INTO Accounts(Username, Email, Password, NodeID, Reputation, Banned, Credits) VALUES(@username, @email, @password, @nodeid, @reputation, @banned, @credits)";
+            try
+            {
+                SQLiteCommand command = new SQLiteCommand(accountSql, m_DatabaseConnection);
+                command.Parameters.AddWithValue("@username", account.Username);
+                command.Parameters.AddWithValue("@email", account.Email);
+                command.Parameters.AddWithValue("@password", account.Password);
+                command.Parameters.AddWithValue("@nodeid", account.NodeID);
+                command.Parameters.AddWithValue("@reputation", account.Reputation);
+                command.Parameters.AddWithValue("@credits", account.Credits);
+                command.Parameters.AddWithValue("@banned", account.Banned);
+                command.ExecuteNonQuery();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return account;
+        }
+
         public Node CreateNode(Node.Type type)
         {
             m_NodesTableMutex.WaitOne();
 
-            Node.Address address = CreateAddress();
-            Node node = new Node(type, address);
+            Node node = new Node();
+            node.ID = 0;
+            node.NodeAddress = CreateAddress();
+            node.NodeType = type;
+            node.Terminated = false;
 
-            // TODO: Insert node into Nodes table
+            string nodeSql = "INSERT INTO Nodes(Address, Type, Terminated) VALUES(@address, @type, @terminated)";
+            try
+            {
+                SQLiteCommand command = new SQLiteCommand(nodeSql, m_DatabaseConnection);
+                command.Parameters.AddWithValue("@address", node.NodeAddress.Value);
+                command.Parameters.AddWithValue("@type", (int)type);
+                command.Parameters.AddWithValue("@terminated", 0);
+                command.ExecuteNonQuery();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            string lastRowId = "SELECT last_insert_rowid() FROM Nodes";
+            try
+            {
+                SQLiteCommand command = new SQLiteCommand(lastRowId, m_DatabaseConnection);
+                node.ID = Convert.ToUInt64(command.ExecuteScalar());
+            }
+            catch (Exception)
+            {
+                throw;
+            }
 
             m_NodesTableMutex.ReleaseMutex();
 
@@ -85,7 +139,7 @@ namespace h4x0r_server
             {
                 Node.Address address = new Node.Address();
 
-                string accountsSql = "SELECT * from Nodes WHERE Address = @address;";
+                string accountsSql = "SELECT * FROM Nodes WHERE Address = @address;";
                 try
                 {
                     SQLiteCommand command = new SQLiteCommand(accountsSql, m_DatabaseConnection);

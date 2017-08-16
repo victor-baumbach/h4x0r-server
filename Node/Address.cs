@@ -15,12 +15,12 @@ namespace h4x0r_server
             // Excludes the most common reserved ranges.
             public Address()
             {
-                m_Value = GenerateRandomAddress();
+                Value = GenerateRandomAddress();
             }
 
             public Address(string value)
             {
-                m_Value = value;
+                Value = value;
             }
 
             private string GenerateRandomAddress()
@@ -55,11 +55,9 @@ namespace h4x0r_server
                 return GenerateRandomAddress();
             }
 
-            public string Value { get; }
+            public string Value { get; set; }
 
             private static Random m_Random = null;
-            private static Mutex m_Mutex = null;
-            private string m_Value;
         }
     }
 }
