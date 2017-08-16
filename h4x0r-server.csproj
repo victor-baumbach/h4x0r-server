@@ -123,10 +123,10 @@
   </Target>
   <PropertyGroup>
     <PostBuildEvent>echo Copying Messages.cs to Unity assets...
-copy $(SolutionDir)\Messages.cs D:\h4x0r\Assets
+copy $(SolutionDir)\Messages.cs %25H4X0R_CLIENT%25
 
 echo Copying MessagesInternal.cs to Unity assets...
-copy $(SolutionDir)\MessagesInternal.cs D:\h4x0r\Assets</PostBuildEvent>
+copy $(SolutionDir)\MessagesInternal.cs %25H4X0R_CLIENT%25</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>echo flatc: Generating MessagesInternal.cs...

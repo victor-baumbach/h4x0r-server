@@ -8,7 +8,7 @@ namespace h4x0r_server
     {
         public Database()
         {
-            string filename = @"C:\Users\Valman\Dropbox\Dev\h4x0r\database\database.sqlite3";
+            string filename = @"database\database.sqlite3";
             m_DatabaseConnection = new SQLiteConnection("Data Source=" + filename + ";Version=3;");
             try
             {
