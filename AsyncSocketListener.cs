@@ -25,13 +25,6 @@ namespace h4x0r_server
 
     public class AsyncSocketListener
     {
-        // Thread signal.  
-        private static ManualResetEvent allDone = new ManualResetEvent(false);
-
-        public AsyncSocketListener()
-        {
-        }
-
         public static void StartListening()
         {
             try
@@ -70,7 +63,7 @@ namespace h4x0r_server
             }
         }
 
-        public static void AcceptCallback(IAsyncResult ar)
+        private static void AcceptCallback(IAsyncResult ar)
         {
             try
             {
@@ -98,7 +91,7 @@ namespace h4x0r_server
 
         }
 
-        public static void ReceiveCallback(IAsyncResult ar)
+        private static void ReceiveCallback(IAsyncResult ar)
         {
             String content = String.Empty;
 
@@ -113,7 +106,7 @@ namespace h4x0r_server
             {
                 // We expect anything being read from this socket to be a message.
                 // If it isn't, kill the connection.
-                if (ProcessMessage(state.buffer) == false)
+                if (OnMessageReceived(handler, state.buffer) == false)
                 {
                     Logger.Write("Invalid message received, terminating connection.");
 
@@ -134,35 +127,26 @@ namespace h4x0r_server
             }
         }
 
-        private static bool ProcessMessage(byte[] buffer)
+        public static void Send(Socket handler, byte[] message)
         {
-            // The messages always have the same structure:
-            // A MessageBase which contains an union of all the valid messages.
-            ByteBuffer bb = new ByteBuffer(buffer);
+            // Begin sending the data to the remote device.  
+            handler.BeginSend(message, 0, message.Length, 0, new AsyncCallback(SendCallback), handler);
+        }
 
-            MessageBase messageBase = MessageBase.GetRootAsMessageBase(bb);
-            switch (messageBase.DataType)
+        private static void SendCallback(IAsyncResult ar)
+        {
+            try
             {
-                case MessageContainer.CreateAccountMessage:
-                    {
-                        CreateAccountMessage? message = messageBase.Data<CreateAccountMessage>();
-                        if (message == null) return false;
+                // Retrieve the socket from the state object.  
+                Socket handler = (Socket)ar.AsyncState;
 
-                        h4x0r.Messages.CreateAccountResult result = Server.CreateAccount(message.Value.Username, message.Value.Email, message.Value.Password);
-                        Logger.Write("Account creation result: " + result.ToString());
-                        break;
-                    }
-                case MessageContainer.LoginMessage:
-                    {
-                        LoginMessage? message = messageBase.Data<LoginMessage>();
-                        if (message == null) return false;
-                        break;
-                    }
-                default:
-                    return false;
+                // Complete sending the data to the remote device.  
+                handler.EndSend(ar);
             }
-
-            return true;
+            catch (Exception e)
+            {
+                Logger.Write(e.ToString());
+            }
         }
 
         public delegate void ConnectionAcceptedDelegate(Socket socket);
@@ -170,6 +154,9 @@ namespace h4x0r_server
 
         public delegate void ConnectionLostDelegate(Socket socket);
         public static ConnectionLostDelegate OnConnectionLost;
+
+        public delegate bool MessageReceivedDelegate(Socket socket, byte[] message);
+        public static MessageReceivedDelegate OnMessageReceived;
 
         private static Socket m_Listener;
     }

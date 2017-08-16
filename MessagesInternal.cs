@@ -12,7 +12,9 @@ public enum MessageContainer : byte
 {
  NONE = 0,
  CreateAccountMessage = 1,
- LoginMessage = 2,
+ CreateAccountResultMessage = 2,
+ LoginMessage = 3,
+ LoginResultMessage = 4,
 };
 
 public enum CreateAccountResult : sbyte
@@ -147,55 +149,29 @@ public struct LoginMessage : IFlatbufferObject
   }
 };
 
-public struct LoginSuccessfulMessage : IFlatbufferObject
+public struct LoginResultMessage : IFlatbufferObject
 {
   private Table __p;
   public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static LoginSuccessfulMessage GetRootAsLoginSuccessfulMessage(ByteBuffer _bb) { return GetRootAsLoginSuccessfulMessage(_bb, new LoginSuccessfulMessage()); }
-  public static LoginSuccessfulMessage GetRootAsLoginSuccessfulMessage(ByteBuffer _bb, LoginSuccessfulMessage obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
+  public static LoginResultMessage GetRootAsLoginResultMessage(ByteBuffer _bb) { return GetRootAsLoginResultMessage(_bb, new LoginResultMessage()); }
+  public static LoginResultMessage GetRootAsLoginResultMessage(ByteBuffer _bb, LoginResultMessage obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
   public void __init(int _i, ByteBuffer _bb) { __p.bb_pos = _i; __p.bb = _bb; }
-  public LoginSuccessfulMessage __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+  public LoginResultMessage __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
 
   public bool Placeholder { get { int o = __p.__offset(4); return o != 0 ? 0!=__p.bb.Get(o + __p.bb_pos) : (bool)false; } }
 
-  public static Offset<LoginSuccessfulMessage> CreateLoginSuccessfulMessage(FlatBufferBuilder builder,
+  public static Offset<LoginResultMessage> CreateLoginResultMessage(FlatBufferBuilder builder,
       bool placeholder = false) {
     builder.StartObject(1);
-    LoginSuccessfulMessage.AddPlaceholder(builder, placeholder);
-    return LoginSuccessfulMessage.EndLoginSuccessfulMessage(builder);
+    LoginResultMessage.AddPlaceholder(builder, placeholder);
+    return LoginResultMessage.EndLoginResultMessage(builder);
   }
 
-  public static void StartLoginSuccessfulMessage(FlatBufferBuilder builder) { builder.StartObject(1); }
+  public static void StartLoginResultMessage(FlatBufferBuilder builder) { builder.StartObject(1); }
   public static void AddPlaceholder(FlatBufferBuilder builder, bool placeholder) { builder.AddBool(0, placeholder, false); }
-  public static Offset<LoginSuccessfulMessage> EndLoginSuccessfulMessage(FlatBufferBuilder builder) {
+  public static Offset<LoginResultMessage> EndLoginResultMessage(FlatBufferBuilder builder) {
     int o = builder.EndObject();
-    return new Offset<LoginSuccessfulMessage>(o);
-  }
-};
-
-public struct LoginFailedMessage : IFlatbufferObject
-{
-  private Table __p;
-  public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static LoginFailedMessage GetRootAsLoginFailedMessage(ByteBuffer _bb) { return GetRootAsLoginFailedMessage(_bb, new LoginFailedMessage()); }
-  public static LoginFailedMessage GetRootAsLoginFailedMessage(ByteBuffer _bb, LoginFailedMessage obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
-  public void __init(int _i, ByteBuffer _bb) { __p.bb_pos = _i; __p.bb = _bb; }
-  public LoginFailedMessage __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
-
-  public bool Placeholder { get { int o = __p.__offset(4); return o != 0 ? 0!=__p.bb.Get(o + __p.bb_pos) : (bool)false; } }
-
-  public static Offset<LoginFailedMessage> CreateLoginFailedMessage(FlatBufferBuilder builder,
-      bool placeholder = false) {
-    builder.StartObject(1);
-    LoginFailedMessage.AddPlaceholder(builder, placeholder);
-    return LoginFailedMessage.EndLoginFailedMessage(builder);
-  }
-
-  public static void StartLoginFailedMessage(FlatBufferBuilder builder) { builder.StartObject(1); }
-  public static void AddPlaceholder(FlatBufferBuilder builder, bool placeholder) { builder.AddBool(0, placeholder, false); }
-  public static Offset<LoginFailedMessage> EndLoginFailedMessage(FlatBufferBuilder builder) {
-    int o = builder.EndObject();
-    return new Offset<LoginFailedMessage>(o);
+    return new Offset<LoginResultMessage>(o);
   }
 };
 

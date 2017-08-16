@@ -3,7 +3,9 @@ namespace h4x0r.MessagesInternal;
 union MessageContainer 
 { 
 	CreateAccountMessage,
-	LoginMessage
+	CreateAccountResultMessage,
+	LoginMessage,
+	LoginResultMessage
 }
 
 table MessageBase 
@@ -31,14 +33,9 @@ table LoginMessage
 	password:string;
 }
 
-table LoginSuccessfulMessage
+table LoginResultMessage
 {
 	placeholder:bool;
 }
 
-table LoginFailedMessage
-{
-	placeholder:bool;
-}
- 
 root_type MessageBase;

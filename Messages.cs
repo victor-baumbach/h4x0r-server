@@ -30,7 +30,7 @@ namespace h4x0r
 
             var messageOffset = MessagesInternal.CreateAccountResultMessage.CreateCreateAccountResultMessage(bb, (MessagesInternal.CreateAccountResult)result);
 
-            var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.CreateAccountMessage, messageOffset.Value);
+            var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.CreateAccountResultMessage, messageOffset.Value);
             bb.Finish(baseOffset.Value);
 
             var ms = new System.IO.MemoryStream(bb.DataBuffer.Data, bb.DataBuffer.Position, bb.Offset);

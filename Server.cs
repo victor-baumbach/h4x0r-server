@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using FlatBuffers;
+using h4x0r.MessagesInternal;
 
 namespace h4x0r_server
 {
@@ -19,14 +17,10 @@ namespace h4x0r_server
             m_SocketListener = new AsyncSocketListener();
             AsyncSocketListener.OnConnectionAccepted = OnConnectionAccepted;
             AsyncSocketListener.OnConnectionLost = OnConnectionLost;
+            AsyncSocketListener.OnMessageReceived = OnMessageReceived;
             AsyncSocketListener.StartListening();
 
             m_Initialised = true;
-
-            for (int i = 0; i < 5; ++i)
-            {
-                m_Database.CreateNode(Node.Type.Terminal);
-            }
         }
 
         public static void Shutdown()
@@ -66,6 +60,43 @@ namespace h4x0r_server
                     break;
                 }
             }
+        }
+
+        public static bool OnMessageReceived(Socket handler, byte[] buffer)
+        {
+            // The messages always have the same structure:
+            // A MessageBase which contains an union of all the valid messages.
+            ByteBuffer bb = new ByteBuffer(buffer);
+
+            MessageBase messageBase = MessageBase.GetRootAsMessageBase(bb);
+            switch (messageBase.DataType)
+            {
+                case MessageContainer.CreateAccountMessage:
+                    {
+                        CreateAccountMessage? message = messageBase.Data<CreateAccountMessage>();
+                        if (message == null) return false;
+
+                        h4x0r.Messages.CreateAccountResult result = Server.CreateAccount(message.Value.Username, message.Value.Email, message.Value.Password);
+                        if (result == h4x0r.Messages.CreateAccountResult.Success)
+                        {
+                            Logger.Write("Created account '{0}' ({1})", message.Value.Username, message.Value.Email);
+                        }
+
+                        AsyncSocketListener.Send(handler, h4x0r.Messages.CreateAccountResultMessage(result));
+
+                        break;
+                    }
+                case MessageContainer.LoginMessage:
+                    {
+                        LoginMessage? message = messageBase.Data<LoginMessage>();
+                        if (message == null) return false;
+                        break;
+                    }
+                default:
+                    return false;
+            }
+
+            return true;
         }
 
         public static h4x0r.Messages.CreateAccountResult CreateAccount(string username, string email, string password)
