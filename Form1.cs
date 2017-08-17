@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace h4x0r_server
 {
-    public partial class Form1 : Form
+    public partial class ServerForm : Form
     {
-        public Form1()
+        public ServerForm()
         {
             InitializeComponent();
         }
