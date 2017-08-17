@@ -33,9 +33,11 @@ table LoginMessage
 	password:string;
 }
 
+// Must be kept in sync with the enum in Messages.cs
+enum LoginResult : byte { Success = 0, Failed, Banned }
 table LoginResultMessage
 {
-	placeholder:bool;
+	result:LoginResult;
 }
 
 root_type MessageBase;

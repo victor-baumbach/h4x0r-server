@@ -36,6 +36,40 @@ namespace h4x0r
             var ms = new System.IO.MemoryStream(bb.DataBuffer.Data, bb.DataBuffer.Position, bb.Offset);
             return ms.ToArray();
         }
+
+        public static byte[] LoginMessage(string username, string password)
+        {
+            FlatBufferBuilder bb = new FlatBufferBuilder(2);
+
+            var messageOffset = MessagesInternal.LoginMessage.CreateLoginMessage(bb, bb.CreateString(username), bb.CreateString(password));
+
+            var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.LoginMessage, messageOffset.Value);
+            bb.Finish(baseOffset.Value);
+
+            var ms = new System.IO.MemoryStream(bb.DataBuffer.Data, bb.DataBuffer.Position, bb.Offset);
+            return ms.ToArray();
+        }
+
+        // Must be kept in sync with the enum in MessagesInternal.fbs
+        public enum LoginResult
+        {
+            Success,
+            Failed,
+            Banned
+        }
+
+        public static byte[] LoginResultMessage(LoginResult result)
+        {
+            FlatBufferBuilder bb = new FlatBufferBuilder(2);
+
+            var messageOffset = MessagesInternal.LoginResultMessage.CreateLoginResultMessage(bb, (MessagesInternal.LoginResult)result);
+
+            var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.LoginResultMessage, messageOffset.Value);
+            bb.Finish(baseOffset.Value);
+
+            var ms = new System.IO.MemoryStream(bb.DataBuffer.Data, bb.DataBuffer.Position, bb.Offset);
+            return ms.ToArray();
+        }
     }
 
 }

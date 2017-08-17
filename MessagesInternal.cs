@@ -23,6 +23,13 @@ public enum CreateAccountResult : sbyte
  AlreadyExists = 1,
 };
 
+public enum LoginResult : sbyte
+{
+ Success = 0,
+ Failed = 1,
+ Banned = 2,
+};
+
 public struct MessageBase : IFlatbufferObject
 {
   private Table __p;
@@ -158,17 +165,17 @@ public struct LoginResultMessage : IFlatbufferObject
   public void __init(int _i, ByteBuffer _bb) { __p.bb_pos = _i; __p.bb = _bb; }
   public LoginResultMessage __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
 
-  public bool Placeholder { get { int o = __p.__offset(4); return o != 0 ? 0!=__p.bb.Get(o + __p.bb_pos) : (bool)false; } }
+  public LoginResult Result { get { int o = __p.__offset(4); return o != 0 ? (LoginResult)__p.bb.GetSbyte(o + __p.bb_pos) : LoginResult.Success; } }
 
   public static Offset<LoginResultMessage> CreateLoginResultMessage(FlatBufferBuilder builder,
-      bool placeholder = false) {
+      LoginResult result = LoginResult.Success) {
     builder.StartObject(1);
-    LoginResultMessage.AddPlaceholder(builder, placeholder);
+    LoginResultMessage.AddResult(builder, result);
     return LoginResultMessage.EndLoginResultMessage(builder);
   }
 
   public static void StartLoginResultMessage(FlatBufferBuilder builder) { builder.StartObject(1); }
-  public static void AddPlaceholder(FlatBufferBuilder builder, bool placeholder) { builder.AddBool(0, placeholder, false); }
+  public static void AddResult(FlatBufferBuilder builder, LoginResult result) { builder.AddSbyte(0, (sbyte)result, 0); }
   public static Offset<LoginResultMessage> EndLoginResultMessage(FlatBufferBuilder builder) {
     int o = builder.EndObject();
     return new Offset<LoginResultMessage>(o);

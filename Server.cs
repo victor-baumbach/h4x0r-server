@@ -90,6 +90,19 @@ namespace h4x0r_server
                     {
                         LoginMessage? message = messageBase.Data<LoginMessage>();
                         if (message == null) return false;
+
+                        h4x0r.Messages.LoginResult result = IsLoginValid(message.Value.Username, message.Value.Password);
+                        if (result == h4x0r.Messages.LoginResult.Failed)
+                        {
+                            Logger.Write("Login failed for user '{0}' (mismatching username / password)", message.Value.Username);
+                        }
+                        else if (result == h4x0r.Messages.LoginResult.Banned)
+                        {
+                            Logger.Write("Login failed for user '{0}' (banned)", message.Value.Username);
+                        }
+
+                        AsyncSocketListener.Send(handler, h4x0r.Messages.LoginResultMessage(result));
+
                         break;
                     }
                 default:
@@ -110,6 +123,26 @@ namespace h4x0r_server
             {
                 m_Database.CreateAccount(username, email, password);
                 return h4x0r.Messages.CreateAccountResult.Success;
+            }
+        }
+
+        public static h4x0r.Messages.LoginResult IsLoginValid(string username, string password)
+        {
+            Account account = m_Database.GetAccount(username);
+            if (account != null && account.Password == password)
+            {
+                if (account.Banned)
+                {
+                    return h4x0r.Messages.LoginResult.Banned;
+                }
+                else
+                {
+                    return h4x0r.Messages.LoginResult.Success;
+                }
+            }
+            else
+            {
+                return h4x0r.Messages.LoginResult.Failed;
             }
         }
 
