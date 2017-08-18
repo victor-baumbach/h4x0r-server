@@ -76,12 +76,7 @@ namespace h4x0r_server
                         CreateAccountMessage? message = messageBase.Data<CreateAccountMessage>();
                         if (message == null) return false;
 
-                        h4x0r.Messages.CreateAccountResult result = Server.CreateAccount(message.Value.Username, message.Value.Email, message.Value.Password);
-                        if (result == h4x0r.Messages.CreateAccountResult.Success)
-                        {
-                            Logger.Write(Logger.Level.Info, "Created account '{0}' ({1})", message.Value.Username, message.Value.Email);
-                        }
-
+                        h4x0r.Messages.CreateAccountResult result = CreateAccount(message.Value.Username, message.Value.Email, message.Value.Password);
                         AsyncSocketListener.Send(handler, h4x0r.Messages.CreateAccountResultMessage(result));
 
                         break;
@@ -117,10 +112,12 @@ namespace h4x0r_server
             Account account = m_Database.GetAccount(username);
             if (account != null)
             {
+                Logger.Write(Logger.Level.Info, "Couldn't create account '{0}', already exists", username);
                 return h4x0r.Messages.CreateAccountResult.AlreadyExists;
             }
             else
             {
+                Logger.Write(Logger.Level.Info, "Created account '{0}' ({1})", username, email);
                 m_Database.CreateAccount(username, email, password);
                 return h4x0r.Messages.CreateAccountResult.Success;
             }
