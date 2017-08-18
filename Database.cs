@@ -13,7 +13,7 @@ namespace h4x0r_server
             try
             {
                 m_DatabaseConnection.Open();
-                Logger.Write("Connection to database estabilished.");
+                Logger.Write(Logger.Level.Info, "Connection to database estabilished.");
             }
             catch (Exception)
             {

@@ -10,7 +10,7 @@ namespace h4x0r_server
     {
         public static void Initialise()
         {
-            Logger.Write("Server initialising...");
+            Logger.Write(Logger.Level.Info, "Server initialising...");
 
             m_Database = new Database();
             m_Clients = new List<Client>();
@@ -34,7 +34,7 @@ namespace h4x0r_server
 
             m_Database.Shutdown();
 
-            Logger.Write("Server shutdown.");
+            Logger.Write(Logger.Level.Info, "Server shutdown.");
             m_Initialised = false;
         }
 
@@ -44,13 +44,13 @@ namespace h4x0r_server
             m_Clients.Add(client);
 
             IPEndPoint remoteEndpoint = (IPEndPoint)socket.RemoteEndPoint;
-            Logger.Write("Connection accepted from {0}.", remoteEndpoint.Address);
+            Logger.Write(Logger.Level.Info, "Connection accepted from {0}.", remoteEndpoint.Address);
         }
 
         public static void OnConnectionLost(Socket socket)
         {
             IPEndPoint remoteEndpoint = (IPEndPoint)socket.RemoteEndPoint;
-            Logger.Write("Connection lost from {0}.", remoteEndpoint.Address);
+            Logger.Write(Logger.Level.Info, "Connection lost from {0}.", remoteEndpoint.Address);
 
             foreach (Client client in m_Clients)
             {
@@ -79,7 +79,7 @@ namespace h4x0r_server
                         h4x0r.Messages.CreateAccountResult result = Server.CreateAccount(message.Value.Username, message.Value.Email, message.Value.Password);
                         if (result == h4x0r.Messages.CreateAccountResult.Success)
                         {
-                            Logger.Write("Created account '{0}' ({1})", message.Value.Username, message.Value.Email);
+                            Logger.Write(Logger.Level.Info, "Created account '{0}' ({1})", message.Value.Username, message.Value.Email);
                         }
 
                         AsyncSocketListener.Send(handler, h4x0r.Messages.CreateAccountResultMessage(result));
@@ -94,11 +94,11 @@ namespace h4x0r_server
                         h4x0r.Messages.LoginResult result = IsLoginValid(message.Value.Username, message.Value.Password);
                         if (result == h4x0r.Messages.LoginResult.Failed)
                         {
-                            Logger.Write("Login failed for user '{0}' (mismatching username / password)", message.Value.Username);
+                            Logger.Write(Logger.Level.Info, "Login failed for user '{0}' (mismatching username / password)", message.Value.Username);
                         }
                         else if (result == h4x0r.Messages.LoginResult.Banned)
                         {
-                            Logger.Write("Login failed for user '{0}' (banned)", message.Value.Username);
+                            Logger.Write(Logger.Level.Info, "Login failed for user '{0}' (banned)", message.Value.Username);
                         }
 
                         AsyncSocketListener.Send(handler, h4x0r.Messages.LoginResultMessage(result));

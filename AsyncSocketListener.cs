@@ -38,14 +38,14 @@ namespace h4x0r_server
                 m_Listener.Bind(localEndPoint);
                 m_Listener.Listen(100);
 
-                Logger.Write("Server listening for connections on port {0}.", localEndPoint.Port);
+                Logger.Write(Logger.Level.Info, "Server listening for connections on port {0}.", localEndPoint.Port);
 
                 // Start an asynchronous socket to listen for connections.  
                 m_Listener.BeginAccept(new AsyncCallback(AcceptCallback), m_Listener);
             }
             catch (Exception e)
             {
-                Logger.Write(e.ToString());
+                Logger.Write(Logger.Level.Error, e.ToString());
             }
         }
 
@@ -59,7 +59,7 @@ namespace h4x0r_server
                 }
 
                 m_Listener.Close();
-                Logger.Write("Server no longer listening for connections.");
+                Logger.Write(Logger.Level.Info, "Server no longer listening for connections.");
             }
         }
 
@@ -108,7 +108,7 @@ namespace h4x0r_server
                 // If it isn't, kill the connection.
                 if (OnMessageReceived(handler, state.buffer) == false)
                 {
-                    Logger.Write("Invalid message received, terminating connection.");
+                    Logger.Write(Logger.Level.Warning, "Invalid message received, terminating connection.");
 
                     handler.Shutdown(SocketShutdown.Both);
                     OnConnectionLost(handler);
@@ -145,7 +145,7 @@ namespace h4x0r_server
             }
             catch (Exception e)
             {
-                Logger.Write(e.ToString());
+                Logger.Write(Logger.Level.Error, e.ToString());
             }
         }
 

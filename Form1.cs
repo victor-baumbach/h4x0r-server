@@ -31,12 +31,12 @@ namespace h4x0r_server
             Server.Shutdown();
         }
 
-        private void LogToListView(string text)
+        private void LogToListView(Logger.Level level, string text)
         {
             // Handle case of LogToListView being called outside the main thread.
             if (InvokeRequired)
             {
-                Invoke(new Action<string>(LogToListView), new object[] { text });
+                Invoke(new Action<Logger.Level, string>(LogToListView), new object[] { level, text });
                 return;
             }
 
@@ -46,7 +46,18 @@ namespace h4x0r_server
                 listViewLog.Items.RemoveAt(0);
             }
 
-            listViewLog.Items.Add(text);
+            // Colour based on warning level
+            ListViewItem item = new ListViewItem(text);
+            if (level == Logger.Level.Warning)
+            {
+                item.BackColor = Color.Orange;
+            }
+            else if (level == Logger.Level.Error)
+            {
+                item.BackColor = Color.Red;
+            }
+
+            listViewLog.Items.Add(item);
 
             // Automatically scroll to the bottom of the list as more entries are added.
             listViewLog.TopItem = listViewLog.Items[listViewLog.Items.Count - 1];
