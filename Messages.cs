@@ -70,6 +70,47 @@ namespace h4x0r
             var ms = new System.IO.MemoryStream(bb.DataBuffer.Data, bb.DataBuffer.Position, bb.Offset);
             return ms.ToArray();
         }
+
+        public static byte[] UpdateAddressMessage(string address, string hostname)
+        {
+            FlatBufferBuilder bb = new FlatBufferBuilder(2);
+
+            var messageOffset = MessagesInternal.UpdateAddressMessage.CreateUpdateAddressMessage(bb, 
+                bb.CreateString(address), 
+                hostname.Length == 0 ? default(StringOffset) : bb.CreateString(hostname));
+
+            var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.UpdateAddressMessage, messageOffset.Value);
+            bb.Finish(baseOffset.Value);
+
+            var ms = new System.IO.MemoryStream(bb.DataBuffer.Data, bb.DataBuffer.Position, bb.Offset);
+            return ms.ToArray();
+        }
+
+        public static byte[] UpdateCreditsMessage(int credits)
+        {
+            FlatBufferBuilder bb = new FlatBufferBuilder(2);
+
+            var messageOffset = MessagesInternal.UpdateCreditsMessage.CreateUpdateCreditsMessage(bb, credits);
+
+            var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.UpdateCreditsMessage, messageOffset.Value);
+            bb.Finish(baseOffset.Value);
+
+            var ms = new System.IO.MemoryStream(bb.DataBuffer.Data, bb.DataBuffer.Position, bb.Offset);
+            return ms.ToArray();
+        }
+
+        public static byte[] UpdateReputationMessage(int reputation)
+        {
+            FlatBufferBuilder bb = new FlatBufferBuilder(2);
+
+            var messageOffset = MessagesInternal.UpdateReputationMessage.CreateUpdateReputationMessage(bb, reputation);
+
+            var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.UpdateReputationMessage, messageOffset.Value);
+            bb.Finish(baseOffset.Value);
+
+            var ms = new System.IO.MemoryStream(bb.DataBuffer.Data, bb.DataBuffer.Position, bb.Offset);
+            return ms.ToArray();
+        }
     }
 
 }

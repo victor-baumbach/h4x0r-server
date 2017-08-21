@@ -86,7 +86,8 @@ namespace h4x0r_server
                         LoginMessage? message = messageBase.Data<LoginMessage>();
                         if (message == null) return false;
 
-                        h4x0r.Messages.LoginResult result = IsLoginValid(message.Value.Username, message.Value.Password);
+                        Account account = m_Database.GetAccount(message.Value.Username);
+                        h4x0r.Messages.LoginResult result = IsLoginValid(account, message.Value.Password);
                         if (result == h4x0r.Messages.LoginResult.Failed)
                         {
                             Logger.Write(Logger.Level.Info, "Login failed for user '{0}' (mismatching username / password)", message.Value.Username);
@@ -123,9 +124,8 @@ namespace h4x0r_server
             }
         }
 
-        public static h4x0r.Messages.LoginResult IsLoginValid(string username, string password)
+        public static h4x0r.Messages.LoginResult IsLoginValid(Account account, string password)
         {
-            Account account = m_Database.GetAccount(username);
             if (account != null && account.Password == password)
             {
                 if (account.Banned)
@@ -141,6 +141,24 @@ namespace h4x0r_server
             {
                 return h4x0r.Messages.LoginResult.Failed;
             }
+        }
+
+        public static Client GetClient(Socket socket)
+        {
+            foreach (Client client in m_Clients)
+            {
+                if (client.GetSocket() == socket)
+                {
+                    return client;
+                }
+            }
+
+            return null;
+        }
+
+        public static Database GetDatabase()
+        {
+            return m_Database;
         }
 
         private static bool m_Initialised;
