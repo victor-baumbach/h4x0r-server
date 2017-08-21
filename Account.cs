@@ -7,7 +7,7 @@ namespace h4x0r_server
     {
         static public Account Create(string username, string email, string password)
         {
-            Node node = Server.Database.CreateNode(Node.Type.Gateway);
+            Node node = Node.Create(Node.Type.Gateway);
 
             Account account = new Account(
                 username,
@@ -78,7 +78,7 @@ namespace h4x0r_server
 
         private Account(string username, string email, string password, UInt64 nodeID, Int64 reputation, Int64 credits, bool banned)
         {
-            Node node = Server.Database.CreateNode(Node.Type.Gateway);
+            Node node = Node.Create(Node.Type.Gateway);
             m_Username = username;
             m_Email = email;
             m_Password = password;
