@@ -15,6 +15,9 @@ public enum MessageContainer : byte
  CreateAccountResultMessage = 2,
  LoginMessage = 3,
  LoginResultMessage = 4,
+ UpdateAddressMessage = 5,
+ UpdateCreditsMessage = 6,
+ UpdateReputationMessage = 7,
 };
 
 public enum CreateAccountResult : sbyte
@@ -179,6 +182,90 @@ public struct LoginResultMessage : IFlatbufferObject
   public static Offset<LoginResultMessage> EndLoginResultMessage(FlatBufferBuilder builder) {
     int o = builder.EndObject();
     return new Offset<LoginResultMessage>(o);
+  }
+};
+
+public struct UpdateAddressMessage : IFlatbufferObject
+{
+  private Table __p;
+  public ByteBuffer ByteBuffer { get { return __p.bb; } }
+  public static UpdateAddressMessage GetRootAsUpdateAddressMessage(ByteBuffer _bb) { return GetRootAsUpdateAddressMessage(_bb, new UpdateAddressMessage()); }
+  public static UpdateAddressMessage GetRootAsUpdateAddressMessage(ByteBuffer _bb, UpdateAddressMessage obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
+  public void __init(int _i, ByteBuffer _bb) { __p.bb_pos = _i; __p.bb = _bb; }
+  public UpdateAddressMessage __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+
+  public string Hostname { get { int o = __p.__offset(4); return o != 0 ? __p.__string(o + __p.bb_pos) : null; } }
+  public ArraySegment<byte>? GetHostnameBytes() { return __p.__vector_as_arraysegment(4); }
+  public string Address { get { int o = __p.__offset(6); return o != 0 ? __p.__string(o + __p.bb_pos) : null; } }
+  public ArraySegment<byte>? GetAddressBytes() { return __p.__vector_as_arraysegment(6); }
+
+  public static Offset<UpdateAddressMessage> CreateUpdateAddressMessage(FlatBufferBuilder builder,
+      StringOffset hostnameOffset = default(StringOffset),
+      StringOffset addressOffset = default(StringOffset)) {
+    builder.StartObject(2);
+    UpdateAddressMessage.AddAddress(builder, addressOffset);
+    UpdateAddressMessage.AddHostname(builder, hostnameOffset);
+    return UpdateAddressMessage.EndUpdateAddressMessage(builder);
+  }
+
+  public static void StartUpdateAddressMessage(FlatBufferBuilder builder) { builder.StartObject(2); }
+  public static void AddHostname(FlatBufferBuilder builder, StringOffset hostnameOffset) { builder.AddOffset(0, hostnameOffset.Value, 0); }
+  public static void AddAddress(FlatBufferBuilder builder, StringOffset addressOffset) { builder.AddOffset(1, addressOffset.Value, 0); }
+  public static Offset<UpdateAddressMessage> EndUpdateAddressMessage(FlatBufferBuilder builder) {
+    int o = builder.EndObject();
+    return new Offset<UpdateAddressMessage>(o);
+  }
+};
+
+public struct UpdateCreditsMessage : IFlatbufferObject
+{
+  private Table __p;
+  public ByteBuffer ByteBuffer { get { return __p.bb; } }
+  public static UpdateCreditsMessage GetRootAsUpdateCreditsMessage(ByteBuffer _bb) { return GetRootAsUpdateCreditsMessage(_bb, new UpdateCreditsMessage()); }
+  public static UpdateCreditsMessage GetRootAsUpdateCreditsMessage(ByteBuffer _bb, UpdateCreditsMessage obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
+  public void __init(int _i, ByteBuffer _bb) { __p.bb_pos = _i; __p.bb = _bb; }
+  public UpdateCreditsMessage __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+
+  public int Credits { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
+
+  public static Offset<UpdateCreditsMessage> CreateUpdateCreditsMessage(FlatBufferBuilder builder,
+      int credits = 0) {
+    builder.StartObject(1);
+    UpdateCreditsMessage.AddCredits(builder, credits);
+    return UpdateCreditsMessage.EndUpdateCreditsMessage(builder);
+  }
+
+  public static void StartUpdateCreditsMessage(FlatBufferBuilder builder) { builder.StartObject(1); }
+  public static void AddCredits(FlatBufferBuilder builder, int credits) { builder.AddInt(0, credits, 0); }
+  public static Offset<UpdateCreditsMessage> EndUpdateCreditsMessage(FlatBufferBuilder builder) {
+    int o = builder.EndObject();
+    return new Offset<UpdateCreditsMessage>(o);
+  }
+};
+
+public struct UpdateReputationMessage : IFlatbufferObject
+{
+  private Table __p;
+  public ByteBuffer ByteBuffer { get { return __p.bb; } }
+  public static UpdateReputationMessage GetRootAsUpdateReputationMessage(ByteBuffer _bb) { return GetRootAsUpdateReputationMessage(_bb, new UpdateReputationMessage()); }
+  public static UpdateReputationMessage GetRootAsUpdateReputationMessage(ByteBuffer _bb, UpdateReputationMessage obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
+  public void __init(int _i, ByteBuffer _bb) { __p.bb_pos = _i; __p.bb = _bb; }
+  public UpdateReputationMessage __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+
+  public int Reputation { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
+
+  public static Offset<UpdateReputationMessage> CreateUpdateReputationMessage(FlatBufferBuilder builder,
+      int reputation = 0) {
+    builder.StartObject(1);
+    UpdateReputationMessage.AddReputation(builder, reputation);
+    return UpdateReputationMessage.EndUpdateReputationMessage(builder);
+  }
+
+  public static void StartUpdateReputationMessage(FlatBufferBuilder builder) { builder.StartObject(1); }
+  public static void AddReputation(FlatBufferBuilder builder, int reputation) { builder.AddInt(0, reputation, 0); }
+  public static Offset<UpdateReputationMessage> EndUpdateReputationMessage(FlatBufferBuilder builder) {
+    int o = builder.EndObject();
+    return new Offset<UpdateReputationMessage>(o);
   }
 };
 

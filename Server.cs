@@ -89,6 +89,22 @@ namespace h4x0r_server
                         h4x0r.Messages.LoginResult result = TryLogin(message.Value.Username, message.Value.Password);
                         AsyncSocketListener.Send(handler, h4x0r.Messages.LoginResultMessage(result));
 
+                        if (result == h4x0r.Messages.LoginResult.Success)
+                        {
+                            // TODO: a second find shouldn't be needed, as we're doing one in the login
+                            Account account = Account.Find(message.Value.Username);
+
+                            // TODO: map of socket to client?
+                            foreach (Client client in m_Clients)
+                            {
+                                if (client.GetSocket() == handler)
+                                {
+                                    client.AssociateAccount(account);
+                                    break;
+                                }
+                            }
+                        }
+
                         break;
                     }
                 default:
@@ -100,7 +116,7 @@ namespace h4x0r_server
 
         public static h4x0r.Messages.CreateAccountResult CreateAccount(string username, string email, string password)
         {
-            Account account = m_Database.GetAccount(username);
+            Account account = Account.Find(username);
             if (account != null)
             {
                 Logger.Write(Logger.Level.Info, "Couldn't create account '{0}', already exists", username);
@@ -109,14 +125,14 @@ namespace h4x0r_server
             else
             {
                 Logger.Write(Logger.Level.Info, "Created account '{0}' ({1})", username, email);
-                m_Database.CreateAccount(username, email, password);
+                Account.Create(username, email, password);
                 return h4x0r.Messages.CreateAccountResult.Success;
             }
         }
 
         public static h4x0r.Messages.LoginResult TryLogin(string username, string password)
         {
-            Account account = m_Database.GetAccount(username);
+            Account account = Account.Find(username);
             if (account != null && account.Password == password)
             {
                 if (account.Banned)
@@ -136,6 +152,8 @@ namespace h4x0r_server
                 return h4x0r.Messages.LoginResult.Failed;
             }
         }
+
+        public static Database Database { get; }
 
         private static bool m_Initialised;
         private static AsyncSocketListener m_SocketListener;

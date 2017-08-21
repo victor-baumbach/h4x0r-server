@@ -5,7 +5,10 @@ union MessageContainer
 	CreateAccountMessage,
 	CreateAccountResultMessage,
 	LoginMessage,
-	LoginResultMessage
+	LoginResultMessage,
+	UpdateAddressMessage,
+	UpdateCreditsMessage,
+	UpdateReputationMessage
 }
 
 table MessageBase 
@@ -38,6 +41,25 @@ enum LoginResult : byte { Success = 0, Failed, Banned }
 table LoginResultMessage
 {
 	result:LoginResult;
+}
+
+// Update the address the player is connected to, used for UI purposes only.
+table UpdateAddressMessage
+{
+	hostname:string;
+	address:string;
+}
+
+// Update the amount of credits the player has.
+table UpdateCreditsMessage
+{
+	credits:int;
+}
+
+// Update the player's reputation.
+table UpdateReputationMessage
+{
+	reputation:int;
 }
 
 root_type MessageBase;
