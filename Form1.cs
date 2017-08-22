@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace h4x0r_server
@@ -23,6 +17,9 @@ namespace h4x0r_server
             Logger.AddTarget(LogToListView);
 
             Server.Initialise();
+            Server.OnClientAdded = OnClientAdded;
+            Server.OnClientRemoved = OnClientRemoved;
+            Server.OnClientLogin = OnClientLogin;
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -61,6 +58,56 @@ namespace h4x0r_server
 
             // Automatically scroll to the bottom of the list as more entries are added.
             listViewLog.TopItem = listViewLog.Items[listViewLog.Items.Count - 1];
+        }
+
+        private void OnClientAdded(Client client)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action<Client>(OnClientAdded), new object[] { client });
+                return;
+            }
+
+            ListViewItem item = new ListViewItem(new[] { client.GetFriendlyAddress(), "<not logged in>" });
+            listViewClients.Items.Add(item);
+        }
+
+        private void OnClientRemoved(Client client)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action<Client>(OnClientRemoved), new object[] { client });
+                return;
+            }
+
+            string addressToRemove = client.GetFriendlyAddress();
+            for (int idx = 0; idx < listViewClients.Items.Count; ++idx)
+            {
+                if (listViewClients.Items[idx].SubItems[0].Text == addressToRemove)
+                {
+                    listViewClients.Items.RemoveAt(idx);
+                    break;
+                }
+            }
+        }
+
+        private void OnClientLogin(Client client)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action<Client>(OnClientLogin), new object[] { client });
+                return;
+            }
+
+            string addressToUpdate = client.GetFriendlyAddress();
+            for (int idx = 0; idx < listViewClients.Items.Count; ++idx)
+            {
+                if (listViewClients.Items[idx].SubItems[0].Text == addressToUpdate)
+                {
+                    listViewClients.Items[idx].SubItems[1].Text = client.Account.Username;
+                    break;
+                }
+            }
         }
 
         private Logger m_Logger;

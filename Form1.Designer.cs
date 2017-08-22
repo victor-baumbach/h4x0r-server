@@ -33,10 +33,11 @@
             this.listViewLog = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.listViewClients = new System.Windows.Forms.ListView();
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.buttonShutdown = new System.Windows.Forms.Button();
-            this.listViewPlayers = new System.Windows.Forms.ListView();
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -71,13 +72,30 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.listViewPlayers);
+            this.groupBox2.Controls.Add(this.listViewClients);
             this.groupBox2.Location = new System.Drawing.Point(18, 12);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(325, 222);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Players";
+            this.groupBox2.Text = "Clients";
+            // 
+            // listViewClients
+            // 
+            this.listViewClients.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader2,
+            this.columnHeader3});
+            this.listViewClients.Location = new System.Drawing.Point(6, 19);
+            this.listViewClients.Name = "listViewClients";
+            this.listViewClients.Size = new System.Drawing.Size(313, 197);
+            this.listViewClients.TabIndex = 4;
+            this.listViewClients.UseCompatibleStateImageBehavior = false;
+            this.listViewClients.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "IP";
+            this.columnHeader2.Width = 100;
             // 
             // groupBox3
             // 
@@ -101,22 +119,10 @@
             this.buttonShutdown.Text = "Shutdown";
             this.buttonShutdown.UseVisualStyleBackColor = false;
             // 
-            // listViewPlayers
+            // columnHeader3
             // 
-            this.listViewPlayers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader2});
-            this.listViewPlayers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.listViewPlayers.Location = new System.Drawing.Point(6, 19);
-            this.listViewPlayers.Name = "listViewPlayers";
-            this.listViewPlayers.Size = new System.Drawing.Size(313, 197);
-            this.listViewPlayers.TabIndex = 4;
-            this.listViewPlayers.UseCompatibleStateImageBehavior = false;
-            this.listViewPlayers.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "";
-            this.columnHeader2.Width = 200;
+            this.columnHeader3.Text = "Account";
+            this.columnHeader3.Width = 200;
             // 
             // ServerForm
             // 
@@ -145,10 +151,11 @@
         private System.Windows.Forms.ListView listViewLog;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.ListView listViewPlayers;
+        private System.Windows.Forms.ListView listViewClients;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button buttonShutdown;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
     }
 }
 

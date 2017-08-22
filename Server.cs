@@ -42,21 +42,21 @@ namespace h4x0r_server
         {
             Client client = new Client(socket);
             m_Clients.Add(client);
+            OnClientAdded(client);
 
-            IPEndPoint remoteEndpoint = (IPEndPoint)socket.RemoteEndPoint;
-            Logger.Write(Logger.Level.Info, "Connection accepted from {0}.", remoteEndpoint.Address);
+            Logger.Write(Logger.Level.Info, "Connection accepted from {0}.", client.GetFriendlyAddress());
         }
 
         public static void OnConnectionLost(Socket socket)
         {
             IPEndPoint remoteEndpoint = (IPEndPoint)socket.RemoteEndPoint;
-            Logger.Write(Logger.Level.Info, "Connection lost from {0}.", remoteEndpoint.Address);
-
             foreach (Client client in m_Clients)
             {
                 if (client.GetSocket() == socket)
                 {
+                    Logger.Write(Logger.Level.Info, "Connection lost from {0}.", client.GetFriendlyAddress());
                     m_Clients.Remove(client);
+                    OnClientRemoved(client);
                     break;
                 }
             }
@@ -100,6 +100,7 @@ namespace h4x0r_server
                                 if (client.GetSocket() == handler)
                                 {
                                     client.AssociateAccount(account);
+                                    OnClientLogin(client);
                                     break;
                                 }
                             }
@@ -152,6 +153,15 @@ namespace h4x0r_server
                 return h4x0r.Messages.LoginResult.Failed;
             }
         }
+
+        public delegate void ClientAddedDelegate(Client client);
+        public static ClientAddedDelegate OnClientAdded;
+
+        public delegate void ClientRemovedDelegate(Client client);
+        public static ClientRemovedDelegate OnClientRemoved;
+
+        public delegate void ClientLoginDelegate(Client client);
+        public static ClientLoginDelegate OnClientLogin;
 
         public static Database Database { get { return m_Database; } }
 

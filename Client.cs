@@ -20,6 +20,23 @@ namespace h4x0r_server
             return m_Socket;
         }
 
+        public string GetFriendlyAddress()
+        {
+            IPEndPoint remoteEndPoint = m_Socket.RemoteEndPoint as IPEndPoint;
+            IPAddress address = remoteEndPoint.Address;
+
+            // If we are IPv4 mapped to a IPv6, our IP address looks like ::ffff:139.29.72.2
+            // Remove the starting ::ffff: to make this easier to read.
+            if (address.IsIPv4MappedToIPv6)
+            {
+                return address.ToString().Substring(7);
+            }
+            else
+            {
+                return address.ToString();
+            }
+        }
+
         // Should be once after the Client has logged in.
         public void AssociateAccount(Account account)
         {
