@@ -32,11 +32,11 @@ namespace h4x0r_server
 
                 int[] address =
                 {
-                m_Random.Next(1, 255),
-                m_Random.Next(0, 255),
-                m_Random.Next(0, 255),
-                m_Random.Next(0, 255)
-            };
+                    m_Random.Next(1, 255),
+                    m_Random.Next(0, 255),
+                    m_Random.Next(0, 255),
+                    m_Random.Next(1, 255)
+                };
 
                 bool valid = true;
                 if ((address[0] == 127 && address[1] == 0 && address[2] == 0) || // 127.0.0.*
