@@ -78,7 +78,6 @@ namespace h4x0r_server
 
         private Account(string username, string email, string password, UInt64 nodeID, Int64 reputation, Int64 credits, bool banned)
         {
-            Node node = Node.Create(Node.Type.Gateway);
             m_Username = username;
             m_Email = email;
             m_Password = password;

@@ -25,7 +25,7 @@ namespace h4x0r_server
             m_DatabaseConnection.Close();
         }
 
-        public SQLiteConnection Connection { get; }
+        public SQLiteConnection Connection { get { return m_DatabaseConnection; } }
 
         private SQLiteConnection m_DatabaseConnection;
     }

@@ -51,7 +51,7 @@ namespace h4x0r_server
                 SQLiteDataReader reader = command.ExecuteReader();
                 if (reader.Read())
                 {
-                    id = (UInt64)reader.GetInt64(reader.GetOrdinal("NodeID"));
+                    id = (UInt64)reader.GetInt64(reader.GetOrdinal("ID"));
                 }
             }
             catch (Exception)
@@ -76,7 +76,7 @@ namespace h4x0r_server
                 if (reader.Read())
                 {
                     return new Node(
-                            (UInt64)reader.GetInt64(reader.GetOrdinal("NodeID")),
+                            (UInt64)reader.GetInt64(reader.GetOrdinal("ID")),
                             new Address(reader.GetString(reader.GetOrdinal("Address"))),
                             (Type)reader.GetInt64(reader.GetOrdinal("Type")),
                             reader.GetBoolean(reader.GetOrdinal("Terminated")));

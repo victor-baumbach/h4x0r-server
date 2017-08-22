@@ -153,7 +153,7 @@ namespace h4x0r_server
             }
         }
 
-        public static Database Database { get; }
+        public static Database Database { get { return m_Database; } }
 
         private static bool m_Initialised;
         private static AsyncSocketListener m_SocketListener;
