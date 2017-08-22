@@ -41,6 +41,7 @@ namespace h4x0r_server
         public void AssociateAccount(Account account)
         {
             m_Account = account;
+            m_Node = Node.Find(account.NodeID);
         }
 
         public Account Account { get { return m_Account; } }
