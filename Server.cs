@@ -101,6 +101,11 @@ namespace h4x0r_server
                                 {
                                     client.AssociateAccount(account);
                                     OnClientLogin(client);
+
+                                    AsyncSocketListener.Send(handler, h4x0r.Messages.UpdateAddressMessage(client.Node.NodeAddress.Value, account.Username));
+                                    AsyncSocketListener.Send(handler, h4x0r.Messages.UpdateCreditsMessage((int)account.Credits));
+                                    AsyncSocketListener.Send(handler, h4x0r.Messages.UpdateReputationMessage((int)account.Reputation));
+
                                     break;
                                 }
                             }

@@ -42,6 +42,8 @@ namespace h4x0r_server
         {
             m_Account = account;
             m_Node = Node.Find(account.NodeID);
+            m_ConnectedToAddress = m_Node.NodeAddress.Value;
+            m_ConnectedToHostname = account.Username;
         }
 
         public Account Account { get { return m_Account; } }
