@@ -1,9 +1,33 @@
 using FlatBuffers;
+using System;
 
 namespace h4x0r
 {
     public class Messages
     {
+        private static byte[] PrefixMessageLength(FlatBufferBuilder bb)
+        {
+            byte[] message = bb.SizedByteArray();
+            byte[] prefix = BitConverter.GetBytes(System.Net.IPAddress.HostToNetworkOrder((short)message.Length));
+            byte[] prefixedMessage = new byte[prefix.Length + message.Length];
+            Buffer.BlockCopy(prefixedMessage, 0, prefixedMessage, 0, prefix.Length);
+            Buffer.BlockCopy(message, 0, prefixedMessage, prefix.Length, message.Length);
+            return prefixedMessage;
+        }
+
+        public static short GetMessageLength(byte[] buffer)
+        {
+            if (buffer.Length < 2)
+            {
+                return 0;
+            }
+            else
+            {
+                short len = System.Net.IPAddress.NetworkToHostOrder(BitConverter.ToInt16(buffer, 0));
+                return (len > 0) ? len : (short)0;
+            }
+        }
+        
         public static byte[] CreateAccountMessage(string username, string email, string password)
         {
             FlatBufferBuilder bb = new FlatBufferBuilder(2);
@@ -13,7 +37,7 @@ namespace h4x0r
             var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.CreateAccountMessage, messageOffset.Value);
             bb.Finish(baseOffset.Value);
 
-            return bb.SizedByteArray();
+            return PrefixMessageLength(bb);
         }
 
         // Must be kept in sync with the enum in MessagesInternal.fbs
@@ -32,7 +56,7 @@ namespace h4x0r
             var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.CreateAccountResultMessage, messageOffset.Value);
             bb.Finish(baseOffset.Value);
 
-            return bb.SizedByteArray();
+            return PrefixMessageLength(bb);
         }
 
         public static byte[] LoginMessage(string username, string password)
@@ -44,7 +68,7 @@ namespace h4x0r
             var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.LoginMessage, messageOffset.Value);
             bb.Finish(baseOffset.Value);
 
-            return bb.SizedByteArray();
+            return PrefixMessageLength(bb);
         }
 
         // Must be kept in sync with the enum in MessagesInternal.fbs
@@ -64,7 +88,7 @@ namespace h4x0r
             var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.LoginResultMessage, messageOffset.Value);
             bb.Finish(baseOffset.Value);
 
-            return bb.SizedByteArray();
+            return PrefixMessageLength(bb);
         }
 
         public static byte[] UpdateAddressMessage(string address, string hostname)
@@ -78,7 +102,7 @@ namespace h4x0r
             var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.UpdateAddressMessage, messageOffset.Value);
             bb.Finish(baseOffset.Value);
 
-            return bb.SizedByteArray();
+            return PrefixMessageLength(bb);
         }
 
         public static byte[] UpdateCreditsMessage(long credits)
@@ -90,7 +114,7 @@ namespace h4x0r
             var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.UpdateCreditsMessage, messageOffset.Value);
             bb.Finish(baseOffset.Value);
 
-            return bb.SizedByteArray();
+            return PrefixMessageLength(bb);
         }
 
         public static byte[] UpdateReputationMessage(int reputation)
@@ -102,7 +126,7 @@ namespace h4x0r
             var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.UpdateReputationMessage, messageOffset.Value);
             bb.Finish(baseOffset.Value);
 
-            return bb.SizedByteArray();
+            return PrefixMessageLength(bb);
         }
     }
 
