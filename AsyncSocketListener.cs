@@ -104,28 +104,53 @@ namespace h4x0r_server
             try
             {
                 int bytesRead = handler.EndReceive(ar);
-                if (bytesRead > 0)
+                bool terminateConnection = (bytesRead > 0);
+                if (!terminateConnection)
                 {
-                    // We expect anything being read from this socket to be a message.
-                    // If it isn't, kill the connection.
-                    if (OnMessageReceived(handler, state.buffer) == false)
+                    // Every message is prefixed with the length of the flatbuffer.
+                    // It is possible for multiple messages to be concatenated.
+                    int bytesToProcess = bytesRead;
+                    while (bytesToProcess > 0)
                     {
-                        Logger.Write(Logger.Level.Warning, "Invalid message received, terminating connection.");
+                        int messageLength = h4x0r.Messages.GetMessageLength(state.buffer);
+                        bytesToProcess -= 2; // length of the prefix, 2 bytes (short)
+                        
+                        // Malformed package, this should never happen.
+                        if (messageLength <= 0 || messageLength > bytesToProcess)
+                        {
+                            Logger.Write(Logger.Level.Error, "Message of invalid size received, terminating connection.");
+                            terminateConnection = true;
+                            break;
+                        }
 
-                        handler.Shutdown(SocketShutdown.Both);
-                        OnConnectionLost(handler);
-                        handler.Close();
+                        // Create a message buffer which does not contain the length prefix
+                        // so it can be cleanly evaluated by code which expects a flatbuffer.
+                        byte[] messageBuffer = new byte[messageLength];
+                        Buffer.BlockCopy(state.buffer, 2, messageBuffer, 0, messageLength);
+
+                        // We expect anything being read from this socket to be a message.
+                        // If it isn't, kill the connection.
+                        if (OnMessageReceived(handler, messageBuffer) == false)
+                        {
+                            Logger.Write(Logger.Level.Error, "Invalid message received, terminating connection.");
+                            terminateConnection = true;
+                            break;
+                        }
+
+                        bytesToProcess -= messageLength;
                     }
-
-                    // Keep receiving data...
-                    handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReceiveCallback), state);
                 }
-                else
+
+                if (terminateConnection)
                 {
-                    // If we read 0 bytes, then we've lost our connection.
                     handler.Shutdown(SocketShutdown.Both);
                     OnConnectionLost(handler);
                     handler.Close();
+                }
+                else
+                {
+                    // Keep receiving data...
+                    handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReceiveCallback), state);
                 }
             }
             catch (System.Net.Sockets.SocketException)
