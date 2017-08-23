@@ -194,23 +194,23 @@ public struct UpdateAddressMessage : IFlatbufferObject
   public void __init(int _i, ByteBuffer _bb) { __p.bb_pos = _i; __p.bb = _bb; }
   public UpdateAddressMessage __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
 
-  public string Hostname { get { int o = __p.__offset(4); return o != 0 ? __p.__string(o + __p.bb_pos) : null; } }
-  public ArraySegment<byte>? GetHostnameBytes() { return __p.__vector_as_arraysegment(4); }
-  public string Address { get { int o = __p.__offset(6); return o != 0 ? __p.__string(o + __p.bb_pos) : null; } }
-  public ArraySegment<byte>? GetAddressBytes() { return __p.__vector_as_arraysegment(6); }
+  public string Address { get { int o = __p.__offset(4); return o != 0 ? __p.__string(o + __p.bb_pos) : null; } }
+  public ArraySegment<byte>? GetAddressBytes() { return __p.__vector_as_arraysegment(4); }
+  public string Hostname { get { int o = __p.__offset(6); return o != 0 ? __p.__string(o + __p.bb_pos) : null; } }
+  public ArraySegment<byte>? GetHostnameBytes() { return __p.__vector_as_arraysegment(6); }
 
   public static Offset<UpdateAddressMessage> CreateUpdateAddressMessage(FlatBufferBuilder builder,
-      StringOffset hostnameOffset = default(StringOffset),
-      StringOffset addressOffset = default(StringOffset)) {
+      StringOffset addressOffset = default(StringOffset),
+      StringOffset hostnameOffset = default(StringOffset)) {
     builder.StartObject(2);
-    UpdateAddressMessage.AddAddress(builder, addressOffset);
     UpdateAddressMessage.AddHostname(builder, hostnameOffset);
+    UpdateAddressMessage.AddAddress(builder, addressOffset);
     return UpdateAddressMessage.EndUpdateAddressMessage(builder);
   }
 
   public static void StartUpdateAddressMessage(FlatBufferBuilder builder) { builder.StartObject(2); }
-  public static void AddHostname(FlatBufferBuilder builder, StringOffset hostnameOffset) { builder.AddOffset(0, hostnameOffset.Value, 0); }
-  public static void AddAddress(FlatBufferBuilder builder, StringOffset addressOffset) { builder.AddOffset(1, addressOffset.Value, 0); }
+  public static void AddAddress(FlatBufferBuilder builder, StringOffset addressOffset) { builder.AddOffset(0, addressOffset.Value, 0); }
+  public static void AddHostname(FlatBufferBuilder builder, StringOffset hostnameOffset) { builder.AddOffset(1, hostnameOffset.Value, 0); }
   public static Offset<UpdateAddressMessage> EndUpdateAddressMessage(FlatBufferBuilder builder) {
     int o = builder.EndObject();
     return new Offset<UpdateAddressMessage>(o);

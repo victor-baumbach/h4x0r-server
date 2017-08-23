@@ -46,8 +46,8 @@ table LoginResultMessage
 // Update the address the player is connected to, used for UI purposes only.
 table UpdateAddressMessage
 {
-	hostname:string;
 	address:string;
+	hostname:string;
 }
 
 // Update the amount of credits the player has.
