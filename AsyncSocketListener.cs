@@ -100,30 +100,37 @@ namespace h4x0r_server
             StateObject state = (StateObject)ar.AsyncState;
             Socket handler = state.workSocket;
 
-            // Read data from the client socket.   
-            int bytesRead = handler.EndReceive(ar);
-            if (bytesRead > 0)
+            // Read data from the client socket. 
+            try
             {
-                // We expect anything being read from this socket to be a message.
-                // If it isn't, kill the connection.
-                if (OnMessageReceived(handler, state.buffer) == false)
+                int bytesRead = handler.EndReceive(ar);
+                if (bytesRead > 0)
                 {
-                    Logger.Write(Logger.Level.Warning, "Invalid message received, terminating connection.");
+                    // We expect anything being read from this socket to be a message.
+                    // If it isn't, kill the connection.
+                    if (OnMessageReceived(handler, state.buffer) == false)
+                    {
+                        Logger.Write(Logger.Level.Warning, "Invalid message received, terminating connection.");
 
+                        handler.Shutdown(SocketShutdown.Both);
+                        OnConnectionLost(handler);
+                        handler.Close();
+                    }
+
+                    // Keep receiving data...
+                    handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReceiveCallback), state);
+                }
+                else
+                {
+                    // If we read 0 bytes, then we've lost our connection.
                     handler.Shutdown(SocketShutdown.Both);
                     OnConnectionLost(handler);
                     handler.Close();
                 }
-
-                // Keep receiving data...
-                handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReceiveCallback), state);
             }
-            else
+            catch (System.Net.Sockets.SocketException)
             {
-                // If we read 0 bytes, then we've lost our connection.
-                handler.Shutdown(SocketShutdown.Both);
                 OnConnectionLost(handler);
-                handler.Close();
             }
         }
 
