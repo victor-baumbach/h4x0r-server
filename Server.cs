@@ -103,8 +103,8 @@ namespace h4x0r_server
                                     OnClientLogin(client);
 
                                     AsyncSocketListener.Send(handler, h4x0r.Messages.UpdateAddressMessage(client.Node.NodeAddress.Value, account.Username));
-                                    AsyncSocketListener.Send(handler, h4x0r.Messages.UpdateCreditsMessage((int)account.Credits));
-                                    AsyncSocketListener.Send(handler, h4x0r.Messages.UpdateReputationMessage((int)account.Reputation));
+                                    AsyncSocketListener.Send(handler, h4x0r.Messages.UpdateCreditsMessage(account.Credits));
+                                    AsyncSocketListener.Send(handler, h4x0r.Messages.UpdateReputationMessage(account.Reputation));
 
                                     break;
                                 }

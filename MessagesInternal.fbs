@@ -53,7 +53,7 @@ table UpdateAddressMessage
 // Update the amount of credits the player has.
 table UpdateCreditsMessage
 {
-	credits:int;
+	credits:long;
 }
 
 // Update the player's reputation.

@@ -55,7 +55,7 @@ namespace h4x0r_server
                             reader.GetString(reader.GetOrdinal("Email")),
                             reader.GetString(reader.GetOrdinal("Password")),
                             (UInt64)reader.GetInt64(reader.GetOrdinal("NodeID")),
-                            reader.GetInt64(reader.GetOrdinal("Reputation")),
+                            reader.GetInt32(reader.GetOrdinal("Reputation")),
                             reader.GetInt64(reader.GetOrdinal("Credits")),
                             reader.GetBoolean(reader.GetOrdinal("Banned")));
                 }
@@ -72,11 +72,11 @@ namespace h4x0r_server
         public string Email { get { return m_Email; } }
         public string Password { get { return m_Password; } }
         public UInt64 NodeID { get { return m_NodeID; } }
-        public Int64 Reputation { get { return m_Reputation; } }
+        public Int32 Reputation { get { return m_Reputation; } }
         public Int64 Credits { get { return m_Credits; } }
         public bool Banned { get { return m_Banned; } }
 
-        private Account(string username, string email, string password, UInt64 nodeID, Int64 reputation, Int64 credits, bool banned)
+        private Account(string username, string email, string password, UInt64 nodeID, Int32 reputation, Int64 credits, bool banned)
         {
             m_Username = username;
             m_Email = email;
@@ -91,7 +91,7 @@ namespace h4x0r_server
         private string m_Email;
         private string m_Password;
         UInt64 m_NodeID;
-        Int64 m_Reputation;
+        Int32 m_Reputation;
         Int64 m_Credits;
         bool m_Banned;
     }

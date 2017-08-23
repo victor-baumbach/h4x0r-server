@@ -226,17 +226,17 @@ public struct UpdateCreditsMessage : IFlatbufferObject
   public void __init(int _i, ByteBuffer _bb) { __p.bb_pos = _i; __p.bb = _bb; }
   public UpdateCreditsMessage __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
 
-  public int Credits { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
+  public long Credits { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetLong(o + __p.bb_pos) : (long)0; } }
 
   public static Offset<UpdateCreditsMessage> CreateUpdateCreditsMessage(FlatBufferBuilder builder,
-      int credits = 0) {
+      long credits = 0) {
     builder.StartObject(1);
     UpdateCreditsMessage.AddCredits(builder, credits);
     return UpdateCreditsMessage.EndUpdateCreditsMessage(builder);
   }
 
   public static void StartUpdateCreditsMessage(FlatBufferBuilder builder) { builder.StartObject(1); }
-  public static void AddCredits(FlatBufferBuilder builder, int credits) { builder.AddInt(0, credits, 0); }
+  public static void AddCredits(FlatBufferBuilder builder, long credits) { builder.AddLong(0, credits, 0); }
   public static Offset<UpdateCreditsMessage> EndUpdateCreditsMessage(FlatBufferBuilder builder) {
     int o = builder.EndObject();
     return new Offset<UpdateCreditsMessage>(o);

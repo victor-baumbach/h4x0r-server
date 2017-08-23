@@ -86,7 +86,7 @@ namespace h4x0r
             return ms.ToArray();
         }
 
-        public static byte[] UpdateCreditsMessage(int credits)
+        public static byte[] UpdateCreditsMessage(long credits)
         {
             FlatBufferBuilder bb = new FlatBufferBuilder(2);
 
