@@ -1,8 +1,66 @@
 using FlatBuffers;
 using System;
+using System.Collections.Generic;
 
 namespace h4x0r
 {
+    public class NetworkMessageException : Exception
+    {
+        public NetworkMessageException()
+        {
+        }
+
+        public NetworkMessageException(string message)
+            : base(message)
+        {
+        }
+
+        public NetworkMessageException(string message, Exception inner)
+            : base(message, inner)
+        {
+        }
+    }
+
+    public class NetworkMessage
+    {
+        public NetworkMessage(byte[] buffer, int bytesToProcess)
+        {
+            m_Messages = new List<byte[]>();
+
+            System.IO.MemoryStream memoryStream = new System.IO.MemoryStream(buffer, 0, bytesToProcess);
+            while (bytesToProcess > 0)
+            {
+                byte[] lengthBuffer = new byte[2];
+                if (memoryStream.Read(lengthBuffer, 0, 2) != 2)
+                {
+                    throw new NetworkMessageException("Invalid length field");
+                }
+                bytesToProcess -= 2;
+
+                short messageLength = System.Net.IPAddress.NetworkToHostOrder(BitConverter.ToInt16(lengthBuffer, 0));
+                if (messageLength <= 0)
+                {
+                    throw new NetworkMessageException("Length field <= 0");
+                }
+
+                byte[] message = new byte[messageLength];
+                if (memoryStream.Read(message, 0, messageLength) != messageLength)
+                {
+                    throw new NetworkMessageException("Message length mismatch");
+                }
+                m_Messages.Add(message);
+                bytesToProcess -= messageLength;
+            }
+        }
+
+        public IEnumerator<byte[]> GetEnumerator()
+        {
+            return m_Messages.GetEnumerator();
+        }
+
+        List<byte[]> m_Messages;
+    }
+
     public class Messages
     {
         private static byte[] PrefixMessageLength(FlatBufferBuilder bb)
@@ -10,24 +68,11 @@ namespace h4x0r
             byte[] message = bb.SizedByteArray();
             byte[] prefix = BitConverter.GetBytes(System.Net.IPAddress.HostToNetworkOrder((short)message.Length));
             byte[] prefixedMessage = new byte[prefix.Length + message.Length];
-            Buffer.BlockCopy(prefixedMessage, 0, prefixedMessage, 0, prefix.Length);
+            Buffer.BlockCopy(prefix, 0, prefixedMessage, 0, prefix.Length);
             Buffer.BlockCopy(message, 0, prefixedMessage, prefix.Length, message.Length);
             return prefixedMessage;
         }
 
-        public static short GetMessageLength(byte[] buffer)
-        {
-            if (buffer.Length < 2)
-            {
-                return 0;
-            }
-            else
-            {
-                short len = System.Net.IPAddress.NetworkToHostOrder(BitConverter.ToInt16(buffer, 0));
-                return (len > 0) ? len : (short)0;
-            }
-        }
-        
         public static byte[] CreateAccountMessage(string username, string email, string password)
         {
             FlatBufferBuilder bb = new FlatBufferBuilder(2);

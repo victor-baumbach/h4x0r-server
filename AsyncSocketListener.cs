@@ -91,10 +91,15 @@ namespace h4x0r_server
 
         }
 
+        private static void TerminateConnection(Socket socket)
+        {
+            socket.Shutdown(SocketShutdown.Both);
+            OnConnectionLost(socket);
+            socket.Close();
+        }
+
         private static void ReceiveCallback(IAsyncResult ar)
         {
-            String content = String.Empty;
-
             // Retrieve the state object and the handler socket  
             // from the asynchronous state object.  
             StateObject state = (StateObject)ar.AsyncState;
@@ -104,58 +109,33 @@ namespace h4x0r_server
             try
             {
                 int bytesRead = handler.EndReceive(ar);
-                bool terminateConnection = (bytesRead > 0);
-                if (!terminateConnection)
+                if (bytesRead == 0)
                 {
-                    // Every message is prefixed with the length of the flatbuffer.
-                    // It is possible for multiple messages to be concatenated.
-                    int bytesToProcess = bytesRead;
-                    while (bytesToProcess > 0)
-                    {
-                        int messageLength = h4x0r.Messages.GetMessageLength(state.buffer);
-                        bytesToProcess -= 2; // length of the prefix, 2 bytes (short)
-                        
-                        // Malformed package, this should never happen.
-                        if (messageLength <= 0 || messageLength > bytesToProcess)
-                        {
-                            Logger.Write(Logger.Level.Error, "Message of invalid size received, terminating connection.");
-                            terminateConnection = true;
-                            break;
-                        }
-
-                        // Create a message buffer which does not contain the length prefix
-                        // so it can be cleanly evaluated by code which expects a flatbuffer.
-                        byte[] messageBuffer = new byte[messageLength];
-                        Buffer.BlockCopy(state.buffer, 2, messageBuffer, 0, messageLength);
-
-                        // We expect anything being read from this socket to be a message.
-                        // If it isn't, kill the connection.
-                        if (OnMessageReceived(handler, messageBuffer) == false)
-                        {
-                            Logger.Write(Logger.Level.Error, "Invalid message received, terminating connection.");
-                            terminateConnection = true;
-                            break;
-                        }
-
-                        bytesToProcess -= messageLength;
-                    }
-                }
-
-                if (terminateConnection)
-                {
-                    handler.Shutdown(SocketShutdown.Both);
-                    OnConnectionLost(handler);
-                    handler.Close();
+                    TerminateConnection(handler);
                 }
                 else
                 {
+                    h4x0r.NetworkMessage networkMessage = new h4x0r.NetworkMessage(state.buffer, bytesRead);
+                    foreach (byte[] message in networkMessage)
+                    {
+                        // We expect anything being read from this socket to be a message.
+                        // If it isn't, kill the connection.
+                        if (OnMessageReceived(handler, message) == false)
+                        {
+                            Logger.Write(Logger.Level.Error, "Invalid message received, terminating connection.");
+                            TerminateConnection(handler);
+                            return;
+                        }
+                    }
+
                     // Keep receiving data...
                     handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReceiveCallback), state);
                 }
             }
-            catch (System.Net.Sockets.SocketException)
+            catch (Exception ex)
             {
-                OnConnectionLost(handler);
+                Logger.Write(Logger.Level.Error, ex.Message);
+                TerminateConnection(handler);
             }
         }
 
