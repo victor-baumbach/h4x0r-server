@@ -18,6 +18,7 @@ public enum MessageContainer : byte
  UpdateAddressMessage = 5,
  UpdateCreditsMessage = 6,
  UpdateReputationMessage = 7,
+ UpdateKnownAddressMessage = 8,
 };
 
 public enum CreateAccountResult : sbyte
@@ -266,6 +267,38 @@ public struct UpdateReputationMessage : IFlatbufferObject
   public static Offset<UpdateReputationMessage> EndUpdateReputationMessage(FlatBufferBuilder builder) {
     int o = builder.EndObject();
     return new Offset<UpdateReputationMessage>(o);
+  }
+};
+
+public struct UpdateKnownAddressMessage : IFlatbufferObject
+{
+  private Table __p;
+  public ByteBuffer ByteBuffer { get { return __p.bb; } }
+  public static UpdateKnownAddressMessage GetRootAsUpdateKnownAddressMessage(ByteBuffer _bb) { return GetRootAsUpdateKnownAddressMessage(_bb, new UpdateKnownAddressMessage()); }
+  public static UpdateKnownAddressMessage GetRootAsUpdateKnownAddressMessage(ByteBuffer _bb, UpdateKnownAddressMessage obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
+  public void __init(int _i, ByteBuffer _bb) { __p.bb_pos = _i; __p.bb = _bb; }
+  public UpdateKnownAddressMessage __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+
+  public string Address { get { int o = __p.__offset(4); return o != 0 ? __p.__string(o + __p.bb_pos) : null; } }
+  public ArraySegment<byte>? GetAddressBytes() { return __p.__vector_as_arraysegment(4); }
+  public string Hostname { get { int o = __p.__offset(6); return o != 0 ? __p.__string(o + __p.bb_pos) : null; } }
+  public ArraySegment<byte>? GetHostnameBytes() { return __p.__vector_as_arraysegment(6); }
+
+  public static Offset<UpdateKnownAddressMessage> CreateUpdateKnownAddressMessage(FlatBufferBuilder builder,
+      StringOffset addressOffset = default(StringOffset),
+      StringOffset hostnameOffset = default(StringOffset)) {
+    builder.StartObject(2);
+    UpdateKnownAddressMessage.AddHostname(builder, hostnameOffset);
+    UpdateKnownAddressMessage.AddAddress(builder, addressOffset);
+    return UpdateKnownAddressMessage.EndUpdateKnownAddressMessage(builder);
+  }
+
+  public static void StartUpdateKnownAddressMessage(FlatBufferBuilder builder) { builder.StartObject(2); }
+  public static void AddAddress(FlatBufferBuilder builder, StringOffset addressOffset) { builder.AddOffset(0, addressOffset.Value, 0); }
+  public static void AddHostname(FlatBufferBuilder builder, StringOffset hostnameOffset) { builder.AddOffset(1, hostnameOffset.Value, 0); }
+  public static Offset<UpdateKnownAddressMessage> EndUpdateKnownAddressMessage(FlatBufferBuilder builder) {
+    int o = builder.EndObject();
+    return new Offset<UpdateKnownAddressMessage>(o);
   }
 };
 

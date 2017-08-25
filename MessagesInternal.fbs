@@ -8,7 +8,8 @@ union MessageContainer
 	LoginResultMessage,
 	UpdateAddressMessage,
 	UpdateCreditsMessage,
-	UpdateReputationMessage
+	UpdateReputationMessage,
+	UpdateKnownAddressMessage
 }
 
 table MessageBase 
@@ -60,6 +61,13 @@ table UpdateCreditsMessage
 table UpdateReputationMessage
 {
 	reputation:int;
+}
+
+// Notify the client that he knows about the existence of the following address.
+table UpdateKnownAddressMessage
+{
+	address:string;
+	hostname:string;
 }
 
 root_type MessageBase;
