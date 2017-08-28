@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Data.SQLite;
 using FlatBuffers;
 using h4x0r.MessagesInternal;
+using System;
 
 namespace h4x0r_server
 {
@@ -106,6 +108,8 @@ namespace h4x0r_server
                                     AsyncSocketListener.Send(handler, h4x0r.Messages.UpdateCreditsMessage(account.Credits));
                                     AsyncSocketListener.Send(handler, h4x0r.Messages.UpdateReputationMessage(account.Reputation));
 
+                                    SendAllKnownAddresses(client);
+
                                     break;
                                 }
                             }
@@ -156,6 +160,29 @@ namespace h4x0r_server
             {
                 Logger.Write(Logger.Level.Warning, "Login failed for user '{0}' (mismatching username / password)", username);
                 return h4x0r.Messages.LoginResult.Failed;
+            }
+        }
+
+        private static void SendAllKnownAddresses(Client client)
+        {
+            string addressesSql = "SELECT * from KnownAddresses WHERE NodeID = @nodeid;";
+            try
+            {
+                SQLiteCommand command = new SQLiteCommand(addressesSql, Database.Connection);
+                command.Parameters.AddWithValue("@nodeid", client.Node.ID);
+
+                SQLiteDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    string address = reader.GetString(reader.GetOrdinal("Address"));
+                    string hostname = "--not implemented--";
+
+                    AsyncSocketListener.Send(client.GetSocket(), h4x0r.Messages.UpdateKnownAddressMessage(address, hostname));
+                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
