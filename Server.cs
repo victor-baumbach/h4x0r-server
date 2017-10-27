@@ -175,7 +175,7 @@ namespace h4x0r_server
                 while (reader.Read())
                 {
                     string address = reader.GetString(reader.GetOrdinal("Address"));
-                    string hostname = "--not implemented--";
+                    string hostname = reader.GetString(reader.GetOrdinal("Hostname"));
 
                     AsyncSocketListener.Send(client.GetSocket(), h4x0r.Messages.UpdateKnownAddressMessage(address, hostname));
                 }
