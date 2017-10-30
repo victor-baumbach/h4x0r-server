@@ -16,32 +16,27 @@ namespace h4x0r
 
         public enum Type
         {
-            Generic,
-            Ice,
-            Icebreaker,
-            Utility
-        };
-
-        public enum SubType
-        {
             // Generic
             Generic,
 
             // Ice
+            Obfuscator,
+            PasswordGate,
             Firewall,
             Service,
             ConnectionSentry,
-            PasswordGate,
             Proxy,
 
             // Icebreaker
+            NodeAnalyser,
+            Cracker,
 
             // Utility
-            NodeAnalyser
+            Tracer,
+            Tracekill,
         }
 
         public Type FileType { get; set; }
-        public SubType FileSubType { get; set; }
         public string Name { get; set; }
         public int Version { get; set; }
     }
