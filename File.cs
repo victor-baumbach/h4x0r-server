@@ -8,6 +8,11 @@ namespace h4x0r
         {
             FileType = Type.Generic;
             Version = 0;
+			CanBeDeleted = Permission.Always;
+			CanBeExecuted = Permission.Never;
+			EncryptionLevel = 0;
+			Size = 1;
+			Unique = false;
         }
 
         public enum Type
@@ -38,6 +43,14 @@ namespace h4x0r
 			VirtualIntelligence,
 			ArtificialIntelligence,
         }
+		
+		public enum Permission
+		{
+			Always,
+			Never,
+			LocalOnly,
+			RemoteOnly
+		}
 
         public Type FileType { get; set; }
 
@@ -74,6 +87,12 @@ namespace h4x0r
                 UpdateSystemName();
             }
         }
+		
+		public Permission CanBeExecuted { get; set; }
+		public Permission CanBeDeleted { get; set; }
+		public int EncryptionLevel { get; set; }
+		public bool Unique { get; set; }
+		public int Size { get; set; }
 
         private void UpdateSystemName()
         {
