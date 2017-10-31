@@ -7,12 +7,15 @@ namespace h4x0r
         public File()
         {
             FileType = Type.Generic;
-            Version = 0;
-			CanBeDeleted = Permission.Always;
-			CanBeExecuted = Permission.Never;
+            Version = 10;
+			CanBeDeleted = Permission.LocalOnly;
+			CanBeExecuted = Permission.LocalOnly;
 			EncryptionLevel = 0;
 			Size = 1;
 			Unique = false;
+            Visible = true;
+            SingleUse = false;
+            Upgradeable = true;
         }
 
         public enum Type
@@ -24,7 +27,6 @@ namespace h4x0r
             Obfuscator,
             PasswordGate,
             Firewall,
-            Service,
             ConnectionSentry,
             Proxy,
 			NoiseWall,
@@ -39,9 +41,15 @@ namespace h4x0r
 
             // Utility
             Tracer,
-            Tracekill,
+            TraceKill,
 			VirtualIntelligence,
 			ArtificialIntelligence,
+
+            // Viruses
+            Miner,
+            Feedback,
+
+            Count,
         }
 		
 		public enum Permission
@@ -93,6 +101,9 @@ namespace h4x0r
 		public int EncryptionLevel { get; set; }
 		public bool Unique { get; set; }
 		public int Size { get; set; }
+        public bool Visible { get; set; }
+        public bool SingleUse { get; set; }
+        public bool Upgradeable { get; set; }
 
         private void UpdateSystemName()
         {
