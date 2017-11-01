@@ -102,12 +102,12 @@
                 // Viruses
                 /////////////////////////////////////////////////////////
 
-                case File.Type.Miner:
+                case File.Type.MinerVirus:
                     file.Name = "miner_virus";
                     file.CanBeExecuted = File.Permission.RemoteOnly;
                     break;
 
-                case File.Type.Feedback:
+                case File.Type.FeedbackVirus:
                     file.Name = "feedback_virus";
                     file.CanBeExecuted = File.Permission.RemoteOnly;
                     break;

@@ -46,8 +46,8 @@ namespace h4x0r
 			ArtificialIntelligence,
 
             // Viruses
-            Miner,
-            Feedback,
+            MinerVirus,
+            FeedbackVirus,
 
             Count,
         }

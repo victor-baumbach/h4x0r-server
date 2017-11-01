@@ -69,7 +69,7 @@
   <ItemGroup>
     <Compile Include="Account.cs" />
     <Compile Include="AsyncSocketListener.cs" />
-    <Compile Include="BlackSphereSoftware.cs" />
+    <Compile Include="BlackSphereSales.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="File.cs" />
