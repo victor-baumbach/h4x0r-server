@@ -19,6 +19,8 @@ public enum MessageContainer : byte
  UpdateCreditsMessage = 6,
  UpdateReputationMessage = 7,
  UpdateKnownAddressMessage = 8,
+ NodeConnectMessage = 9,
+ NodeConnectResultMessage = 10,
 };
 
 public enum CreateAccountResult : sbyte
@@ -299,6 +301,65 @@ public struct UpdateKnownAddressMessage : IFlatbufferObject
   public static Offset<UpdateKnownAddressMessage> EndUpdateKnownAddressMessage(FlatBufferBuilder builder) {
     int o = builder.EndObject();
     return new Offset<UpdateKnownAddressMessage>(o);
+  }
+};
+
+public struct NodeConnectMessage : IFlatbufferObject
+{
+  private Table __p;
+  public ByteBuffer ByteBuffer { get { return __p.bb; } }
+  public static NodeConnectMessage GetRootAsNodeConnectMessage(ByteBuffer _bb) { return GetRootAsNodeConnectMessage(_bb, new NodeConnectMessage()); }
+  public static NodeConnectMessage GetRootAsNodeConnectMessage(ByteBuffer _bb, NodeConnectMessage obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
+  public void __init(int _i, ByteBuffer _bb) { __p.bb_pos = _i; __p.bb = _bb; }
+  public NodeConnectMessage __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+
+  public string Route(int j) { int o = __p.__offset(4); return o != 0 ? __p.__string(__p.__vector(o) + j * 4) : null; }
+  public int RouteLength { get { int o = __p.__offset(4); return o != 0 ? __p.__vector_len(o) : 0; } }
+
+  public static Offset<NodeConnectMessage> CreateNodeConnectMessage(FlatBufferBuilder builder,
+      VectorOffset routeOffset = default(VectorOffset)) {
+    builder.StartObject(1);
+    NodeConnectMessage.AddRoute(builder, routeOffset);
+    return NodeConnectMessage.EndNodeConnectMessage(builder);
+  }
+
+  public static void StartNodeConnectMessage(FlatBufferBuilder builder) { builder.StartObject(1); }
+  public static void AddRoute(FlatBufferBuilder builder, VectorOffset routeOffset) { builder.AddOffset(0, routeOffset.Value, 0); }
+  public static VectorOffset CreateRouteVector(FlatBufferBuilder builder, StringOffset[] data) { builder.StartVector(4, data.Length, 4); for (int i = data.Length - 1; i >= 0; i--) builder.AddOffset(data[i].Value); return builder.EndVector(); }
+  public static void StartRouteVector(FlatBufferBuilder builder, int numElems) { builder.StartVector(4, numElems, 4); }
+  public static Offset<NodeConnectMessage> EndNodeConnectMessage(FlatBufferBuilder builder) {
+    int o = builder.EndObject();
+    return new Offset<NodeConnectMessage>(o);
+  }
+};
+
+public struct NodeConnectResultMessage : IFlatbufferObject
+{
+  private Table __p;
+  public ByteBuffer ByteBuffer { get { return __p.bb; } }
+  public static NodeConnectResultMessage GetRootAsNodeConnectResultMessage(ByteBuffer _bb) { return GetRootAsNodeConnectResultMessage(_bb, new NodeConnectResultMessage()); }
+  public static NodeConnectResultMessage GetRootAsNodeConnectResultMessage(ByteBuffer _bb, NodeConnectResultMessage obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
+  public void __init(int _i, ByteBuffer _bb) { __p.bb_pos = _i; __p.bb = _bb; }
+  public NodeConnectResultMessage __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+
+  public bool Success { get { int o = __p.__offset(4); return o != 0 ? 0!=__p.bb.Get(o + __p.bb_pos) : (bool)false; } }
+  public int Type { get { int o = __p.__offset(6); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
+
+  public static Offset<NodeConnectResultMessage> CreateNodeConnectResultMessage(FlatBufferBuilder builder,
+      bool success = false,
+      int type = 0) {
+    builder.StartObject(2);
+    NodeConnectResultMessage.AddType(builder, type);
+    NodeConnectResultMessage.AddSuccess(builder, success);
+    return NodeConnectResultMessage.EndNodeConnectResultMessage(builder);
+  }
+
+  public static void StartNodeConnectResultMessage(FlatBufferBuilder builder) { builder.StartObject(2); }
+  public static void AddSuccess(FlatBufferBuilder builder, bool success) { builder.AddBool(0, success, false); }
+  public static void AddType(FlatBufferBuilder builder, int type) { builder.AddInt(1, type, 0); }
+  public static Offset<NodeConnectResultMessage> EndNodeConnectResultMessage(FlatBufferBuilder builder) {
+    int o = builder.EndObject();
+    return new Offset<NodeConnectResultMessage>(o);
   }
 };
 

@@ -8,12 +8,14 @@ namespace h4x0r_server
     {
         public enum Type
         {
-            Gateway,
+            Invalid = -1,
+            Gateway = 0,
             Server,
             Terminal,
             Mainframe,
             Blackmarket,
-            Decoy
+            Decoy,
+            Home
         }
 
         static public Node Create(Type type)

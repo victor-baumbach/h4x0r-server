@@ -9,7 +9,9 @@ union MessageContainer
 	UpdateAddressMessage,
 	UpdateCreditsMessage,
 	UpdateReputationMessage,
-	UpdateKnownAddressMessage
+	UpdateKnownAddressMessage,
+	NodeConnectMessage,
+	NodeConnectResultMessage
 }
 
 table MessageBase 
@@ -68,6 +70,17 @@ table UpdateKnownAddressMessage
 {
 	address:string;
 	hostname:string;
+}
+
+table NodeConnectMessage
+{
+	route:[string];
+}
+
+table NodeConnectResultMessage
+{
+	success:bool;
+	type:int;
 }
 
 root_type MessageBase;

@@ -187,6 +187,24 @@ namespace h4x0r
 
             return PrefixMessageLength(bb);
         }
+
+        public static byte[] NodeConnectMessage(string[] route)
+        {
+            FlatBufferBuilder bb = new FlatBufferBuilder(2);
+
+            StringOffset[] offsets = new StringOffset[route.Length];
+            for (int i = 0; i < route.Length; ++i)
+            {
+                offsets[i] = bb.CreateString(route[i]);
+            }
+
+            var messageOffset = MessagesInternal.NodeConnectMessage.CreateRouteVector(bb, offsets);
+
+            var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.NodeConnectMessage, messageOffset.Value);
+            bb.Finish(baseOffset.Value);
+
+            return PrefixMessageLength(bb);
+        }
     }
 
 }
