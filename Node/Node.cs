@@ -6,6 +6,7 @@ namespace h4x0r_server
 {
     partial class Node
     {
+        // Must be kept in sync with the client's enum.
         public enum Type
         {
             Invalid = -1,
