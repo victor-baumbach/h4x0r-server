@@ -68,14 +68,15 @@ table UpdateReputationMessage
 // Notify the client that he knows about the existence of the following address.
 table UpdateKnownAddressMessage
 {
-	address:string;
+	address:string; 
 	hostname:string;
+	type:int;
 }
 
 table NodeConnectMessage
 {
 	route:[string];
-}
+} 
 
 table NodeConnectResultMessage
 {
