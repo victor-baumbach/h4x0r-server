@@ -36,6 +36,13 @@ public enum LoginResult : sbyte
  Banned = 2,
 };
 
+public enum NodeConnectResult : sbyte
+{
+ Success = 0,
+ Timeout = 1,
+ ConnectionRejected = 2,
+};
+
 public struct MessageBase : IFlatbufferObject
 {
   private Table __p;
@@ -346,11 +353,11 @@ public struct NodeConnectResultMessage : IFlatbufferObject
   public void __init(int _i, ByteBuffer _bb) { __p.bb_pos = _i; __p.bb = _bb; }
   public NodeConnectResultMessage __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
 
-  public bool Success { get { int o = __p.__offset(4); return o != 0 ? 0!=__p.bb.Get(o + __p.bb_pos) : (bool)false; } }
+  public NodeConnectResult Success { get { int o = __p.__offset(4); return o != 0 ? (NodeConnectResult)__p.bb.GetSbyte(o + __p.bb_pos) : NodeConnectResult.Success; } }
   public int Type { get { int o = __p.__offset(6); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
 
   public static Offset<NodeConnectResultMessage> CreateNodeConnectResultMessage(FlatBufferBuilder builder,
-      bool success = false,
+      NodeConnectResult success = NodeConnectResult.Success,
       int type = 0) {
     builder.StartObject(2);
     NodeConnectResultMessage.AddType(builder, type);
@@ -359,7 +366,7 @@ public struct NodeConnectResultMessage : IFlatbufferObject
   }
 
   public static void StartNodeConnectResultMessage(FlatBufferBuilder builder) { builder.StartObject(2); }
-  public static void AddSuccess(FlatBufferBuilder builder, bool success) { builder.AddBool(0, success, false); }
+  public static void AddSuccess(FlatBufferBuilder builder, NodeConnectResult success) { builder.AddSbyte(0, (sbyte)success, 0); }
   public static void AddType(FlatBufferBuilder builder, int type) { builder.AddInt(1, type, 0); }
   public static Offset<NodeConnectResultMessage> EndNodeConnectResultMessage(FlatBufferBuilder builder) {
     int o = builder.EndObject();

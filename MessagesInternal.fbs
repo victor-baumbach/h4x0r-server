@@ -78,9 +78,11 @@ table NodeConnectMessage
 	route:[string];
 } 
 
+// Must be kept in sync with the enum in Messages.cs
+enum NodeConnectResult : byte { Success = 0, Timeout, ConnectionRejected }
 table NodeConnectResultMessage
 {
-	success:bool;
+	success:NodeConnectResult;
 	type:int;
 }
 

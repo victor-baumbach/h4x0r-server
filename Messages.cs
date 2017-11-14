@@ -206,6 +206,29 @@ namespace h4x0r
 
             return PrefixMessageLength(bb);
         }
+
+        // Must be kept in sync with the enum in MessagesInternal.fbs
+        public enum NodeConnectResult
+        {
+            Success,
+            Timeout,
+            ConnectionRejected
+        }
+
+        public static byte[] NodeConnectResultMessage(NodeConnectResult success, int type)
+        {
+            FlatBufferBuilder bb = new FlatBufferBuilder(2);
+
+            var messageOffset = MessagesInternal.NodeConnectResultMessage.CreateNodeConnectResultMessage(
+                bb,
+                (MessagesInternal.NodeConnectResult)success,
+                type);
+
+            var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.NodeConnectResultMessage, messageOffset.Value);
+            bb.Finish(baseOffset.Value);
+
+            return PrefixMessageLength(bb);
+        }
     }
 
 }
