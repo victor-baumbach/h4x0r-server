@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{ABCEAD31-591A-4C54-866B-70379F9DC9FB}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>h4x0r_server</RootNamespace>
+    <RootNamespace>h4x0r</RootNamespace>
     <AssemblyName>h4x0r-server</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

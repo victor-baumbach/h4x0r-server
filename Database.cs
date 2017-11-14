@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data.SQLite;
 
-namespace h4x0r_server
+namespace h4x0r
 {
     class Database
     {

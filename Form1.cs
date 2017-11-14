@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace h4x0r_server
+namespace h4x0r
 {
     public partial class ServerForm : Form
     {

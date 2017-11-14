@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 
-namespace h4x0r_server
+namespace h4x0r
 {
     partial class Node
     {

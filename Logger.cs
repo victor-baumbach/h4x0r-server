@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace h4x0r_server
+namespace h4x0r
 {
     /////////////////////////////////////////////////////////////////////
     // Logger

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace h4x0r_server
+namespace h4x0r
 {
     static class Program
     {

@@ -6,7 +6,7 @@ using FlatBuffers;
 using h4x0r.MessagesInternal;
 using System;
 
-namespace h4x0r_server
+namespace h4x0r
 {
     class Server
     {

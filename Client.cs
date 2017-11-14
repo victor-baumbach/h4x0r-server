@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 
-namespace h4x0r_server
+namespace h4x0r
 {
     class Client
     {

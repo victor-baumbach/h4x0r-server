@@ -6,7 +6,7 @@ using System.Threading;
 using FlatBuffers;
 using h4x0r.MessagesInternal;
 
-namespace h4x0r_server
+namespace h4x0r
 {
     /////////////////////////////////////////////////////////////////////
     // AsyncSocketListener

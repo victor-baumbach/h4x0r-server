@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace h4x0r_server.Properties {
+namespace h4x0r.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

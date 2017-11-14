@@ -2,7 +2,7 @@
 using System.Data.SQLite;
 using System.Threading;
 
-namespace h4x0r_server
+namespace h4x0r
 {
     partial class Node
     {
