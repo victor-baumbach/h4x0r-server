@@ -36,6 +36,18 @@ public enum LoginResult : sbyte
  Banned = 2,
 };
 
+public enum NodeType : sbyte
+{
+ Invalid = -1,
+ Gateway = 0,
+ Server = 1,
+ Terminal = 2,
+ Mainframe = 3,
+ Blackmarket = 4,
+ Decoy = 5,
+ Home = 6,
+};
+
 public enum NodeConnectResult : sbyte
 {
  Success = 0,

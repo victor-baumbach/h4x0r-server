@@ -33,6 +33,7 @@ table CreateAccountResultMessage
 	result:CreateAccountResult;
 }
 
+// Sent by the client.
 table LoginMessage 
 {
 	username:string;
@@ -46,6 +47,7 @@ table LoginResultMessage
 	result:LoginResult;
 }
 
+// Sent by the server.
 // Update the address the player is connected to, used for UI purposes only.
 table UpdateAddressMessage
 {
@@ -53,18 +55,34 @@ table UpdateAddressMessage
 	hostname:string;
 }
 
+// Sent by the server.
 // Update the amount of credits the player has.
 table UpdateCreditsMessage
 {
 	credits:long;
 }
 
+// Sent by the server.
 // Update the player's reputation.
 table UpdateReputationMessage
 {
 	reputation:int;
 }
 
+// Must be kept in sync with the enum in Node.cs
+enum NodeType : byte 
+{
+	Invalid = -1,
+	Gateway = 0,
+	Server,
+	Terminal,
+	Mainframe,
+	Blackmarket,
+	Decoy,
+	Home 
+}
+
+// Sent by the server.
 // Notify the client that he knows about the existence of the following address.
 table UpdateKnownAddressMessage
 {
@@ -73,13 +91,23 @@ table UpdateKnownAddressMessage
 	type:int;
 }
 
+// Sent by the client.
+// Attempt to connect to the last node in the array, bouncing (in order) through all earlier nodes.
 table NodeConnectMessage
 {
 	route:[string];
 } 
 
 // Must be kept in sync with the enum in Messages.cs
-enum NodeConnectResult : byte { Success = 0, Timeout, ConnectionRejected }
+enum NodeConnectResult : byte 
+{ 
+	Success = 0, 
+	Timeout, 
+	ConnectionRejected 
+}
+
+// Sent by the server.
+// Was the routing and connection to the destination node successful?
 table NodeConnectResultMessage
 {
 	success:NodeConnectResult;
