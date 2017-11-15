@@ -304,23 +304,23 @@ public struct UpdateKnownAddressMessage : IFlatbufferObject
   public ArraySegment<byte>? GetAddressBytes() { return __p.__vector_as_arraysegment(4); }
   public string Hostname { get { int o = __p.__offset(6); return o != 0 ? __p.__string(o + __p.bb_pos) : null; } }
   public ArraySegment<byte>? GetHostnameBytes() { return __p.__vector_as_arraysegment(6); }
-  public int Type { get { int o = __p.__offset(8); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
+  public NodeType Type { get { int o = __p.__offset(8); return o != 0 ? (NodeType)__p.bb.GetSbyte(o + __p.bb_pos) : NodeType.Gateway; } }
 
   public static Offset<UpdateKnownAddressMessage> CreateUpdateKnownAddressMessage(FlatBufferBuilder builder,
       StringOffset addressOffset = default(StringOffset),
       StringOffset hostnameOffset = default(StringOffset),
-      int type = 0) {
+      NodeType type = NodeType.Gateway) {
     builder.StartObject(3);
-    UpdateKnownAddressMessage.AddType(builder, type);
     UpdateKnownAddressMessage.AddHostname(builder, hostnameOffset);
     UpdateKnownAddressMessage.AddAddress(builder, addressOffset);
+    UpdateKnownAddressMessage.AddType(builder, type);
     return UpdateKnownAddressMessage.EndUpdateKnownAddressMessage(builder);
   }
 
   public static void StartUpdateKnownAddressMessage(FlatBufferBuilder builder) { builder.StartObject(3); }
   public static void AddAddress(FlatBufferBuilder builder, StringOffset addressOffset) { builder.AddOffset(0, addressOffset.Value, 0); }
   public static void AddHostname(FlatBufferBuilder builder, StringOffset hostnameOffset) { builder.AddOffset(1, hostnameOffset.Value, 0); }
-  public static void AddType(FlatBufferBuilder builder, int type) { builder.AddInt(2, type, 0); }
+  public static void AddType(FlatBufferBuilder builder, NodeType type) { builder.AddSbyte(2, (sbyte)type, 0); }
   public static Offset<UpdateKnownAddressMessage> EndUpdateKnownAddressMessage(FlatBufferBuilder builder) {
     int o = builder.EndObject();
     return new Offset<UpdateKnownAddressMessage>(o);
@@ -366,11 +366,11 @@ public struct NodeConnectResultMessage : IFlatbufferObject
   public NodeConnectResultMessage __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
 
   public NodeConnectResult Success { get { int o = __p.__offset(4); return o != 0 ? (NodeConnectResult)__p.bb.GetSbyte(o + __p.bb_pos) : NodeConnectResult.Success; } }
-  public int Type { get { int o = __p.__offset(6); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
+  public NodeType Type { get { int o = __p.__offset(6); return o != 0 ? (NodeType)__p.bb.GetSbyte(o + __p.bb_pos) : NodeType.Gateway; } }
 
   public static Offset<NodeConnectResultMessage> CreateNodeConnectResultMessage(FlatBufferBuilder builder,
       NodeConnectResult success = NodeConnectResult.Success,
-      int type = 0) {
+      NodeType type = NodeType.Gateway) {
     builder.StartObject(2);
     NodeConnectResultMessage.AddType(builder, type);
     NodeConnectResultMessage.AddSuccess(builder, success);
@@ -379,7 +379,7 @@ public struct NodeConnectResultMessage : IFlatbufferObject
 
   public static void StartNodeConnectResultMessage(FlatBufferBuilder builder) { builder.StartObject(2); }
   public static void AddSuccess(FlatBufferBuilder builder, NodeConnectResult success) { builder.AddSbyte(0, (sbyte)success, 0); }
-  public static void AddType(FlatBufferBuilder builder, int type) { builder.AddInt(1, type, 0); }
+  public static void AddType(FlatBufferBuilder builder, NodeType type) { builder.AddSbyte(1, (sbyte)type, 0); }
   public static Offset<NodeConnectResultMessage> EndNodeConnectResultMessage(FlatBufferBuilder builder) {
     int o = builder.EndObject();
     return new Offset<NodeConnectResultMessage>(o);

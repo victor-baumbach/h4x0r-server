@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace h4x0r
 {
-    partial class Node
+    public partial class Node
     {
         // Must be kept in sync with the client's enum.
         public enum Type

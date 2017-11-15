@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace h4x0r
 {
-    partial class Node
+    public partial class Node
     {
         public class Address
         {

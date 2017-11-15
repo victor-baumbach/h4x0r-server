@@ -176,7 +176,7 @@ namespace h4x0r
                 {
                     string address = reader.GetString(reader.GetOrdinal("Address"));
                     string hostname = reader.GetString(reader.GetOrdinal("Hostname"));
-                    int type = reader.GetInt32(reader.GetOrdinal("Type"));
+                    Node.Type type = (Node.Type)reader.GetInt32(reader.GetOrdinal("Type"));
 
                     AsyncSocketListener.Send(client.GetSocket(), h4x0r.Messages.UpdateKnownAddressMessage(address, hostname, type));
                 }

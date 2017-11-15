@@ -174,14 +174,14 @@ namespace h4x0r
             return PrefixMessageLength(bb);
         }
 
-        public static byte[] UpdateKnownAddressMessage(string address, string hostname, int type)
+        public static byte[] UpdateKnownAddressMessage(string address, string hostname, Node.Type type)
         {
             FlatBufferBuilder bb = new FlatBufferBuilder(2);
 
             var messageOffset = MessagesInternal.UpdateKnownAddressMessage.CreateUpdateKnownAddressMessage(bb,
                 bb.CreateString(address),
                 hostname.Length == 0 ? default(StringOffset) : bb.CreateString(hostname),
-                type);
+                (MessagesInternal.NodeType)type);
 
             var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.UpdateKnownAddressMessage, messageOffset.Value);
             bb.Finish(baseOffset.Value);
@@ -215,14 +215,14 @@ namespace h4x0r
             ConnectionRejected
         }
 
-        public static byte[] NodeConnectResultMessage(NodeConnectResult success, int type)
+        public static byte[] NodeConnectResultMessage(NodeConnectResult success, Node.Type type)
         {
             FlatBufferBuilder bb = new FlatBufferBuilder(2);
 
             var messageOffset = MessagesInternal.NodeConnectResultMessage.CreateNodeConnectResultMessage(
                 bb,
                 (MessagesInternal.NodeConnectResult)success,
-                type);
+                (MessagesInternal.NodeType)type);
 
             var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.NodeConnectResultMessage, messageOffset.Value);
             bb.Finish(baseOffset.Value);

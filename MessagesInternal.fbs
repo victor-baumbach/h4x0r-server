@@ -88,7 +88,7 @@ table UpdateKnownAddressMessage
 {
 	address:string; 
 	hostname:string;
-	type:int;
+	type:NodeType;
 }
 
 // Sent by the client.
@@ -111,7 +111,7 @@ enum NodeConnectResult : byte
 table NodeConnectResultMessage
 {
 	success:NodeConnectResult;
-	type:int;
+	type:NodeType;
 }
 
 root_type MessageBase;
