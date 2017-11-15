@@ -78,8 +78,8 @@ namespace h4x0r
                         CreateAccountMessage? message = messageBase.Data<CreateAccountMessage>();
                         if (message == null) return false;
 
-                        h4x0r.Messages.CreateAccountResult result = CreateAccount(message.Value.Username, message.Value.Email, message.Value.Password);
-                        AsyncSocketListener.Send(handler, h4x0r.Messages.CreateAccountResultMessage(result));
+                        Messages.CreateAccountResult result = CreateAccount(message.Value.Username, message.Value.Email, message.Value.Password);
+                        AsyncSocketListener.Send(handler, Messages.CreateAccountResultMessage(result));
 
                         break;
                     }
@@ -88,10 +88,10 @@ namespace h4x0r
                         LoginMessage? message = messageBase.Data<LoginMessage>();
                         if (message == null) return false;
 
-                        h4x0r.Messages.LoginResult result = TryLogin(message.Value.Username, message.Value.Password);
-                        AsyncSocketListener.Send(handler, h4x0r.Messages.LoginResultMessage(result));
+                        Messages.LoginResult result = TryLogin(message.Value.Username, message.Value.Password);
+                        AsyncSocketListener.Send(handler, Messages.LoginResultMessage(result));
 
-                        if (result == h4x0r.Messages.LoginResult.Success)
+                        if (result == Messages.LoginResult.Success)
                         {
                             // TODO: a second find shouldn't be needed, as we're doing one in the login
                             Account account = Account.Find(message.Value.Username);
@@ -104,9 +104,9 @@ namespace h4x0r
                                     client.AssociateAccount(account);
                                     OnClientLogin(client);
 
-                                    AsyncSocketListener.Send(handler, h4x0r.Messages.UpdateAddressMessage(client.Node.NodeAddress.Value, account.Username));
-                                    AsyncSocketListener.Send(handler, h4x0r.Messages.UpdateCreditsMessage(account.Credits));
-                                    AsyncSocketListener.Send(handler, h4x0r.Messages.UpdateReputationMessage(account.Reputation));
+                                    AsyncSocketListener.Send(handler, Messages.UpdateAddressMessage(client.Node.NodeAddress.Value, account.Username));
+                                    AsyncSocketListener.Send(handler, Messages.UpdateCreditsMessage(account.Credits));
+                                    AsyncSocketListener.Send(handler, Messages.UpdateReputationMessage(account.Reputation));
 
                                     SendAllKnownAddresses(client);
 
@@ -124,23 +124,23 @@ namespace h4x0r
             return true;
         }
 
-        public static h4x0r.Messages.CreateAccountResult CreateAccount(string username, string email, string password)
+        public static Messages.CreateAccountResult CreateAccount(string username, string email, string password)
         {
             Account account = Account.Find(username);
             if (account != null)
             {
                 Logger.Write(Logger.Level.Info, "Couldn't create account '{0}', already exists", username);
-                return h4x0r.Messages.CreateAccountResult.AlreadyExists;
+                return Messages.CreateAccountResult.AlreadyExists;
             }
             else
             {
                 Logger.Write(Logger.Level.Info, "Created account '{0}' ({1})", username, email);
                 Account.Create(username, email, password);
-                return h4x0r.Messages.CreateAccountResult.Success;
+                return Messages.CreateAccountResult.Success;
             }
         }
 
-        public static h4x0r.Messages.LoginResult TryLogin(string username, string password)
+        public static Messages.LoginResult TryLogin(string username, string password)
         {
             Account account = Account.Find(username);
             if (account != null && account.Password == password)
@@ -148,18 +148,18 @@ namespace h4x0r
                 if (account.Banned)
                 {
                     Logger.Write(Logger.Level.Warning, "Login failed for user '{0}' (banned)", username);
-                    return h4x0r.Messages.LoginResult.Banned;
+                    return Messages.LoginResult.Banned;
                 }
                 else
                 {
                     Logger.Write(Logger.Level.Info, "Login successful for user '{0}'", username);
-                    return h4x0r.Messages.LoginResult.Success;
+                    return Messages.LoginResult.Success;
                 }
             }
             else
             {
                 Logger.Write(Logger.Level.Warning, "Login failed for user '{0}' (mismatching username / password)", username);
-                return h4x0r.Messages.LoginResult.Failed;
+                return Messages.LoginResult.Failed;
             }
         }
 
@@ -178,7 +178,7 @@ namespace h4x0r
                     string hostname = reader.GetString(reader.GetOrdinal("Hostname"));
                     Node.Type type = (Node.Type)reader.GetInt32(reader.GetOrdinal("Type"));
 
-                    AsyncSocketListener.Send(client.GetSocket(), h4x0r.Messages.UpdateKnownAddressMessage(address, hostname, type));
+                    AsyncSocketListener.Send(client.GetSocket(), Messages.UpdateKnownAddressMessage(address, hostname, type));
                 }
             }
             catch (Exception)
