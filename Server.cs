@@ -16,6 +16,7 @@ namespace h4x0r
 
             m_Database = new Database();
             m_Clients = new List<Client>();
+            m_SocketToClient = new Dictionary<Socket, Client>();
             m_SocketListener = new AsyncSocketListener();
             AsyncSocketListener.OnConnectionAccepted = OnConnectionAccepted;
             AsyncSocketListener.OnConnectionLost = OnConnectionLost;
@@ -44,24 +45,19 @@ namespace h4x0r
         {
             Client client = new Client(socket);
             m_Clients.Add(client);
+            m_SocketToClient[socket] = client;
             OnClientAdded(client);
-
             Logger.Write(Logger.Level.Info, "Connection accepted from {0}.", client.GetFriendlyAddress());
         }
 
         public static void OnConnectionLost(Socket socket)
         {
             IPEndPoint remoteEndpoint = (IPEndPoint)socket.RemoteEndPoint;
-            foreach (Client client in m_Clients)
-            {
-                if (client.GetSocket() == socket)
-                {
-                    Logger.Write(Logger.Level.Info, "Connection lost from {0}.", client.GetFriendlyAddress());
-                    m_Clients.Remove(client);
-                    OnClientRemoved(client);
-                    break;
-                }
-            }
+            Client client = m_SocketToClient[socket];
+            Logger.Write(Logger.Level.Info, "Connection lost from {0}.", client.GetFriendlyAddress());
+            m_Clients.Remove(client);
+            m_SocketToClient.Remove(socket);
+            OnClientRemoved(client);
         }
 
         public static bool OnMessageReceived(Socket handler, byte[] buffer)
@@ -96,24 +92,23 @@ namespace h4x0r
                             // TODO: a second find shouldn't be needed, as we're doing one in the login
                             Account account = Account.Find(message.Value.Username);
 
-                            // TODO: map of socket to client?
-                            foreach (Client client in m_Clients)
-                            {
-                                if (client.GetSocket() == handler)
-                                {
-                                    client.AssociateAccount(account);
-                                    OnClientLogin(client);
+                            Client client = m_SocketToClient[handler];
+                            client.AssociateAccount(account);
+                            OnClientLogin(client);
 
-                                    AsyncSocketListener.Send(handler, Messages.UpdateAddressMessage(client.Node.NodeAddress.Value, account.Username));
-                                    AsyncSocketListener.Send(handler, Messages.UpdateCreditsMessage(account.Credits));
-                                    AsyncSocketListener.Send(handler, Messages.UpdateReputationMessage(account.Reputation));
+                            AsyncSocketListener.Send(handler, Messages.UpdateAddressMessage(client.Node.NodeAddress.Value, account.Username));
+                            AsyncSocketListener.Send(handler, Messages.UpdateCreditsMessage(account.Credits));
+                            AsyncSocketListener.Send(handler, Messages.UpdateReputationMessage(account.Reputation));
 
-                                    SendAllKnownAddresses(client);
-
-                                    break;
-                                }
-                            }
+                            SendAllKnownAddresses(client);
                         }
+
+                        break;
+                    }
+                case MessageContainer.NodeConnectMessage:
+                    {
+                        NodeConnectMessage? message = messageBase.Data<NodeConnectMessage>();
+                        if (message == null) return false;
 
                         break;
                     }
@@ -171,6 +166,7 @@ namespace h4x0r
                 SQLiteCommand command = new SQLiteCommand(addressesSql, Database.Connection);
                 command.Parameters.AddWithValue("@nodeid", client.Node.ID);
 
+                // TODO: This really should send a single message which contains all the addresses.
                 SQLiteDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -201,6 +197,7 @@ namespace h4x0r
         private static bool m_Initialised;
         private static AsyncSocketListener m_SocketListener;
         private static List<Client> m_Clients;
+        private static Dictionary<Socket, Client> m_SocketToClient;
         private static Database m_Database;
     }
 }
