@@ -215,14 +215,13 @@ namespace h4x0r
             ConnectionRejected
         }
 
-        public static byte[] NodeConnectResultMessage(NodeConnectResult success, Node.Type type)
+        public static byte[] NodeConnectResultMessage(NodeConnectResult success)
         {
             FlatBufferBuilder bb = new FlatBufferBuilder(2);
 
             var messageOffset = MessagesInternal.NodeConnectResultMessage.CreateNodeConnectResultMessage(
                 bb,
-                (MessagesInternal.NodeConnectResult)success,
-                (MessagesInternal.NodeType)type);
+                (MessagesInternal.NodeConnectResult)success);
 
             var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.NodeConnectResultMessage, messageOffset.Value);
             bb.Finish(baseOffset.Value);

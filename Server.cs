@@ -110,6 +110,15 @@ namespace h4x0r
                         NodeConnectMessage? message = messageBase.Data<NodeConnectMessage>();
                         if (message == null) return false;
 
+                        List<string> route = new List<string>();
+                        for (int i = 0; i < message.Value.RouteLength; ++i)
+                        {
+                            route.Add(message.Value.Route(i));
+                        }
+
+                        Messages.NodeConnectResult result = NodeConnect(route);
+                        AsyncSocketListener.Send(handler, Messages.NodeConnectResultMessage(result));
+
                         break;
                     }
                 default:
@@ -156,6 +165,36 @@ namespace h4x0r
                 Logger.Write(Logger.Level.Warning, "Login failed for user '{0}' (mismatching username / password)", username);
                 return Messages.LoginResult.Failed;
             }
+        }
+
+        public static Messages.NodeConnectResult NodeConnect(List<string> route)
+        {
+            string nodeSql = "SELECT * from Nodes WHERE Address = @address";
+            for (int i = 0; i < route.Count; ++i)
+            {
+                string address = route[i];
+                SQLiteCommand command = new SQLiteCommand(nodeSql, Database.Connection);
+                command.Parameters.AddWithValue("@address", address);
+
+                SQLiteDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    // The black market always rejects connections, as the players can never see its logs.
+                    Node.Type type = (Node.Type)reader.GetInt32(reader.GetOrdinal("Type"));
+                    if (type == Node.Type.Blackmarket)
+                    {
+                        return Messages.NodeConnectResult.ConnectionRejected;
+                    }
+
+                    // TODO: Create log entry
+                }
+                else
+                {
+                    return Messages.NodeConnectResult.Timeout;
+                }
+            }
+
+            return Messages.NodeConnectResult.Success;
         }
 
         private static void SendAllKnownAddresses(Client client)

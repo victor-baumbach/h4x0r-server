@@ -111,7 +111,6 @@ enum NodeConnectResult : byte
 table NodeConnectResultMessage
 {
 	success:NodeConnectResult;
-	type:NodeType;
 }
 
 root_type MessageBase;
