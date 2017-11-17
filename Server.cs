@@ -108,7 +108,7 @@ namespace h4x0r
                 case MessageContainer.NodeConnectMessage:
                     {
                         NodeConnectMessage? message = messageBase.Data<NodeConnectMessage>();
-                        if (message == null) return false;
+                        if (message == null || message.Value.RouteLength == 0) return false;
 
                         List<string> route = new List<string>();
                         for (int i = 0; i < message.Value.RouteLength; ++i)
@@ -116,8 +116,9 @@ namespace h4x0r
                             route.Add(message.Value.Route(i));
                         }
 
-                        Messages.NodeConnectResult result = NodeConnect(route);
-                        AsyncSocketListener.Send(handler, Messages.NodeConnectResultMessage(result));
+                        int nodeErrorIndex;
+                        Messages.NodeConnectResult result = NodeConnect(route, out nodeErrorIndex);
+                        AsyncSocketListener.Send(handler, Messages.NodeConnectResultMessage(result, nodeErrorIndex));
 
                         break;
                     }
@@ -167,11 +168,12 @@ namespace h4x0r
             }
         }
 
-        public static Messages.NodeConnectResult NodeConnect(List<string> route)
+        public static Messages.NodeConnectResult NodeConnect(List<string> route, out int nodeErrorIndex)
         {
             string nodeSql = "SELECT * from Nodes WHERE Address = @address";
             for (int i = 0; i < route.Count; ++i)
             {
+                bool isBounce = (i != route.Count - 1);
                 string address = route[i];
                 SQLiteCommand command = new SQLiteCommand(nodeSql, Database.Connection);
                 command.Parameters.AddWithValue("@address", address);
@@ -179,10 +181,11 @@ namespace h4x0r
                 SQLiteDataReader reader = command.ExecuteReader();
                 if (reader.Read())
                 {
-                    // The black market always rejects connections, as the players can never see its logs.
+                    // The black market always rejects bounces, as the players can never see its logs.
                     Node.Type type = (Node.Type)reader.GetInt32(reader.GetOrdinal("Type"));
-                    if (type == Node.Type.Blackmarket)
+                    if (type == Node.Type.Blackmarket && isBounce)
                     {
+                        nodeErrorIndex = i;
                         return Messages.NodeConnectResult.ConnectionRejected;
                     }
 
@@ -190,10 +193,12 @@ namespace h4x0r
                 }
                 else
                 {
+                    nodeErrorIndex = i;
                     return Messages.NodeConnectResult.Timeout;
                 }
             }
 
+            nodeErrorIndex = -1;
             return Messages.NodeConnectResult.Success;
         }
 

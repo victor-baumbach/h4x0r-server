@@ -108,9 +108,11 @@ enum NodeConnectResult : byte
 
 // Sent by the server.
 // Was the routing and connection to the destination node successful?
+// In case of an unsuccessful connection, errorNode contains the index of the node which caused the problem.
 table NodeConnectResultMessage
 {
 	success:NodeConnectResult;
+	errorNode:byte;
 }
 
 root_type MessageBase;

@@ -199,7 +199,8 @@ namespace h4x0r
                 offsets[i] = bb.CreateString(route[i]);
             }
 
-            var messageOffset = MessagesInternal.NodeConnectMessage.CreateRouteVector(bb, offsets);
+            VectorOffset vectorOffset = MessagesInternal.NodeConnectMessage.CreateRouteVector(bb, offsets);
+            var messageOffset = MessagesInternal.NodeConnectMessage.CreateNodeConnectMessage(bb, vectorOffset);
 
             var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.NodeConnectMessage, messageOffset.Value);
             bb.Finish(baseOffset.Value);
@@ -215,13 +216,14 @@ namespace h4x0r
             ConnectionRejected
         }
 
-        public static byte[] NodeConnectResultMessage(NodeConnectResult success)
+        public static byte[] NodeConnectResultMessage(NodeConnectResult success, int errorNode)
         {
             FlatBufferBuilder bb = new FlatBufferBuilder(2);
 
             var messageOffset = MessagesInternal.NodeConnectResultMessage.CreateNodeConnectResultMessage(
                 bb,
-                (MessagesInternal.NodeConnectResult)success);
+                (MessagesInternal.NodeConnectResult)success,
+                (sbyte)errorNode);
 
             var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.NodeConnectResultMessage, messageOffset.Value);
             bb.Finish(baseOffset.Value);

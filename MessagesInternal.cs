@@ -366,16 +366,20 @@ public struct NodeConnectResultMessage : IFlatbufferObject
   public NodeConnectResultMessage __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
 
   public NodeConnectResult Success { get { int o = __p.__offset(4); return o != 0 ? (NodeConnectResult)__p.bb.GetSbyte(o + __p.bb_pos) : NodeConnectResult.Success; } }
+  public sbyte ErrorNode { get { int o = __p.__offset(6); return o != 0 ? __p.bb.GetSbyte(o + __p.bb_pos) : (sbyte)0; } }
 
   public static Offset<NodeConnectResultMessage> CreateNodeConnectResultMessage(FlatBufferBuilder builder,
-      NodeConnectResult success = NodeConnectResult.Success) {
-    builder.StartObject(1);
+      NodeConnectResult success = NodeConnectResult.Success,
+      sbyte errorNode = 0) {
+    builder.StartObject(2);
+    NodeConnectResultMessage.AddErrorNode(builder, errorNode);
     NodeConnectResultMessage.AddSuccess(builder, success);
     return NodeConnectResultMessage.EndNodeConnectResultMessage(builder);
   }
 
-  public static void StartNodeConnectResultMessage(FlatBufferBuilder builder) { builder.StartObject(1); }
+  public static void StartNodeConnectResultMessage(FlatBufferBuilder builder) { builder.StartObject(2); }
   public static void AddSuccess(FlatBufferBuilder builder, NodeConnectResult success) { builder.AddSbyte(0, (sbyte)success, 0); }
+  public static void AddErrorNode(FlatBufferBuilder builder, sbyte errorNode) { builder.AddSbyte(1, errorNode, 0); }
   public static Offset<NodeConnectResultMessage> EndNodeConnectResultMessage(FlatBufferBuilder builder) {
     int o = builder.EndObject();
     return new Offset<NodeConnectResultMessage>(o);
