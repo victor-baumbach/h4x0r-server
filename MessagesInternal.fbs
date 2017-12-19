@@ -115,4 +115,33 @@ table NodeConnectResultMessage
 	errorNode:byte;
 }
 
+// Sent by the server.
+// Contains the prices for all the software sold by the Black Sphere node.
+table BlackSphereSoftwareMessage
+{
+
+}
+
+// Sent by the client.
+table PurchaseSoftwareMessage
+{
+	software:int;
+}
+
+// Must be kept in sync with the enum in Messages.cs
+enum PurchaseSoftwareResult : byte
+{
+	Success = 0,
+	InsufficientFunds,
+	InsufficientRAM
+}
+
+// Sent by the server.
+// Whether a particular piece of software could be purchased and installed in
+// the player's node.
+table PurchaseSoftwareResultMessage
+{
+	success:PurchaseResult;
+}
+
 root_type MessageBase;
