@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace h4x0r
 {
-    class BlackSphereSales
+    public class BlackSphereSales
     {
         public BlackSphereSales()
         {

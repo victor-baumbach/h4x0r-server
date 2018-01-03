@@ -42,6 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlackSphereSales.cs" />
+    <Compile Include="File.cs" />
+    <Compile Include="FileFactory.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="MessagesInternal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -21,9 +21,8 @@ public enum MessageContainer : byte
  UpdateKnownAddressMessage = 8,
  NodeConnectMessage = 9,
  NodeConnectResultMessage = 10,
- BlackSphereSoftwareMessage = 11,
- PurchaseSoftwareMessage = 12,
- PurchaseSoftwareResultMessage = 13,
+ PurchaseSoftwareMessage = 11,
+ PurchaseSoftwareResultMessage = 12,
 };
 
 public enum CreateAccountResult : sbyte
@@ -63,6 +62,7 @@ public enum PurchaseSoftwareResult : sbyte
  Success = 0,
  InsufficientFunds = 1,
  InsufficientRAM = 2,
+ InvalidRequest = 3,
 };
 
 public struct MessageBase : IFlatbufferObject
@@ -393,23 +393,6 @@ public struct NodeConnectResultMessage : IFlatbufferObject
   public static Offset<NodeConnectResultMessage> EndNodeConnectResultMessage(FlatBufferBuilder builder) {
     int o = builder.EndObject();
     return new Offset<NodeConnectResultMessage>(o);
-  }
-};
-
-public struct BlackSphereSoftwareMessage : IFlatbufferObject
-{
-  private Table __p;
-  public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static BlackSphereSoftwareMessage GetRootAsBlackSphereSoftwareMessage(ByteBuffer _bb) { return GetRootAsBlackSphereSoftwareMessage(_bb, new BlackSphereSoftwareMessage()); }
-  public static BlackSphereSoftwareMessage GetRootAsBlackSphereSoftwareMessage(ByteBuffer _bb, BlackSphereSoftwareMessage obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
-  public void __init(int _i, ByteBuffer _bb) { __p.bb_pos = _i; __p.bb = _bb; }
-  public BlackSphereSoftwareMessage __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
-
-
-  public static void StartBlackSphereSoftwareMessage(FlatBufferBuilder builder) { builder.StartObject(0); }
-  public static Offset<BlackSphereSoftwareMessage> EndBlackSphereSoftwareMessage(FlatBufferBuilder builder) {
-    int o = builder.EndObject();
-    return new Offset<BlackSphereSoftwareMessage>(o);
   }
 };
 

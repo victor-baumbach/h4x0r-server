@@ -2,7 +2,7 @@
 
 namespace h4x0r
 {
-    class File
+    public class File
     {
         public File()
         {

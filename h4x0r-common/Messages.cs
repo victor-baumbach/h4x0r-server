@@ -231,9 +231,42 @@ namespace h4x0r
             return PrefixMessageLength(bb);
         }
 
-        // TODO: BlackSphereSoftwareMessage
+        public static byte[] PurchaseSoftwareMessage(File.Type fileType)
+        {
+            FlatBufferBuilder bb = new FlatBufferBuilder(2);
 
+            var messageOffset = MessagesInternal.PurchaseSoftwareMessage.CreatePurchaseSoftwareMessage(
+                bb,
+                (sbyte)fileType);
 
+            var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.PurchaseSoftwareMessage, messageOffset.Value);
+            bb.Finish(baseOffset.Value);
+
+            return PrefixMessageLength(bb);
+        }
+
+        // Must be kept in sync with the enum in MessagesInternal.fbs
+        public enum PurchaseSoftwareResult
+        {
+            Success,
+            InsufficientFunds,
+            InsufficientRAM,
+            InvalidRequest
+        }
+
+        public static byte[] PurchaseSoftwareResultMessage(PurchaseSoftwareResult result)
+        {
+            FlatBufferBuilder bb = new FlatBufferBuilder(2);
+
+            var messageOffset = MessagesInternal.PurchaseSoftwareResultMessage.CreatePurchaseSoftwareResultMessage(
+                bb,
+                (MessagesInternal.PurchaseSoftwareResult)result);
+
+            var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.PurchaseSoftwareResultMessage, messageOffset.Value);
+            bb.Finish(baseOffset.Value);
+
+            return PrefixMessageLength(bb);
+        }
     }
 
 }

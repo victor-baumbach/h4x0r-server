@@ -12,7 +12,6 @@ union MessageContainer
 	UpdateKnownAddressMessage,
 	NodeConnectMessage,
 	NodeConnectResultMessage,
-	BlackSphereSoftwareMessage,
 	PurchaseSoftwareMessage,
 	PurchaseSoftwareResultMessage
 }
@@ -118,13 +117,6 @@ table NodeConnectResultMessage
 	errorNode:byte;
 }
 
-// Sent by the server.
-// Contains the prices for all the software sold by the Black Sphere node.
-table BlackSphereSoftwareMessage
-{
-
-}
-
 // Sent by the client.
 table PurchaseSoftwareMessage
 {
@@ -136,7 +128,8 @@ enum PurchaseSoftwareResult : byte
 {
 	Success = 0,
 	InsufficientFunds,
-	InsufficientRAM
+	InsufficientRAM,
+	InvalidRequest // Not a valid file which can be purchased.
 }
 
 // Sent by the server.
