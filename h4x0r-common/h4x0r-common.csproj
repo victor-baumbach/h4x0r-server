@@ -7,7 +7,7 @@
     <ProjectGuid>{572795FB-FA77-4B93-9C81-DE9872D4C5F9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>h4x0r_common</RootNamespace>
+    <RootNamespace>h4x0r</RootNamespace>
     <AssemblyName>h4x0r-common</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -38,9 +38,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -59,5 +57,9 @@
   <PropertyGroup>
     <PreBuildEvent>echo flatc: Generating MessagesInternal.cs...
 $(SolutionDir)\h4x0r-common\flatc.exe -o $(SolutionDir)\h4x0r-common --csharp $(SolutionDir)\h4x0r-common\MessagesInternal.fbs --gen-onefile</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>echo Copying h4x0r-common.dll to %25H4X0R_CLIENT%25\assets\plugins ...
+copy $(SolutionDir)\h4x0r-common\bin\Debug\h4x0r-common.dll %25H4X0R_CLIENT%25\assets\plugins\</PostBuildEvent>
   </PropertyGroup>
 </Project>
