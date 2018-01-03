@@ -182,8 +182,8 @@ namespace h4x0r
                 if (reader.Read())
                 {
                     // The black market always rejects bounces, as the players can never see its logs.
-                    Node.Type type = (Node.Type)reader.GetInt32(reader.GetOrdinal("Type"));
-                    if (type == Node.Type.Blackmarket && isBounce)
+                    Common.NodeType type = (Common.NodeType)reader.GetInt32(reader.GetOrdinal("Type"));
+                    if (type == Common.NodeType.Blackmarket && isBounce)
                     {
                         nodeErrorIndex = i;
                         return Messages.NodeConnectResult.ConnectionRejected;
@@ -216,7 +216,7 @@ namespace h4x0r
                 {
                     string address = reader.GetString(reader.GetOrdinal("Address"));
                     string hostname = reader.GetString(reader.GetOrdinal("Hostname"));
-                    Node.Type type = (Node.Type)reader.GetInt32(reader.GetOrdinal("Type"));
+                    Common.NodeType type = (Common.NodeType)reader.GetInt32(reader.GetOrdinal("Type"));
 
                     AsyncSocketListener.Send(client.GetSocket(), Messages.UpdateKnownAddressMessage(address, hostname, type));
                 }

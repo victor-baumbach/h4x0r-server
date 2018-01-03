@@ -174,14 +174,14 @@ namespace h4x0r
             return PrefixMessageLength(bb);
         }
 
-        public static byte[] UpdateKnownAddressMessage(string address, string hostname, Node.Type type)
+        public static byte[] UpdateKnownAddressMessage(string address, string hostname, Common.NodeType nodeType)
         {
             FlatBufferBuilder bb = new FlatBufferBuilder(2);
 
             var messageOffset = MessagesInternal.UpdateKnownAddressMessage.CreateUpdateKnownAddressMessage(bb,
                 bb.CreateString(address),
                 hostname.Length == 0 ? default(StringOffset) : bb.CreateString(hostname),
-                (MessagesInternal.NodeType)type);
+                (MessagesInternal.TypeNode)nodeType);
 
             var baseOffset = MessagesInternal.MessageBase.CreateMessageBase(bb, MessagesInternal.MessageContainer.UpdateKnownAddressMessage, messageOffset.Value);
             bb.Finish(baseOffset.Value);
@@ -230,6 +230,10 @@ namespace h4x0r
 
             return PrefixMessageLength(bb);
         }
+
+        // TODO: BlackSphereSoftwareMessage
+
+
     }
 
 }

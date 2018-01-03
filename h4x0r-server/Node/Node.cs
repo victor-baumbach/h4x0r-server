@@ -6,20 +6,7 @@ namespace h4x0r
 {
     public partial class Node
     {
-        // Must be kept in sync with the client's enum.
-        public enum Type
-        {
-            Invalid = -1,
-            Gateway = 0,
-            Server,
-            Terminal,
-            Mainframe,
-            Blackmarket,
-            Decoy,
-            Home
-        }
-
-        static public Node Create(Type type)
+        static public Node Create(Common.NodeType nodeType)
         {
             if (m_NodesTableMutex == null)
             {
@@ -34,7 +21,7 @@ namespace h4x0r
             {
                 SQLiteCommand command = new SQLiteCommand(nodeSql, Server.Database.Connection);
                 command.Parameters.AddWithValue("@address", address.Value);
-                command.Parameters.AddWithValue("@type", (int)type);
+                command.Parameters.AddWithValue("@type", (int)nodeType);
                 command.Parameters.AddWithValue("@terminated", 0);
                 command.ExecuteNonQuery();
             }
@@ -64,7 +51,7 @@ namespace h4x0r
 
             m_NodesTableMutex.ReleaseMutex();
 
-            return new Node(id, CreateAddress(), type, false);
+            return new Node(id, CreateAddress(), nodeType, false);
         }
 
         static public Node Find(UInt64 id)
@@ -81,7 +68,7 @@ namespace h4x0r
                     return new Node(
                             (UInt64)reader.GetInt64(reader.GetOrdinal("ID")),
                             new Address(reader.GetString(reader.GetOrdinal("Address"))),
-                            (Type)reader.GetInt64(reader.GetOrdinal("Type")),
+                            (Common.NodeType)reader.GetInt64(reader.GetOrdinal("Type")),
                             reader.GetBoolean(reader.GetOrdinal("Terminated")));
                 }
             }
@@ -124,10 +111,10 @@ namespace h4x0r
 
         public UInt64 ID { get { return m_ID; } }
         public Address NodeAddress { get { return m_Address; } }
-        public Type NodeType { get { return m_NodeType; } }
+        public Common.NodeType NodeType { get { return m_NodeType; } }
         public bool Terminated { get { return m_Terminated; } }
 
-        private Node(UInt64 id, Address address, Type nodeType, bool terminated)
+        private Node(UInt64 id, Address address, Common.NodeType nodeType, bool terminated)
         {
             m_ID = id;
             m_Address = address;
@@ -137,7 +124,7 @@ namespace h4x0r
 
         private UInt64 m_ID;
         private Address m_Address;
-        private Type m_NodeType;
+        private Common.NodeType m_NodeType;
         private bool m_Terminated;
 
         static private Mutex m_NodesTableMutex = null;

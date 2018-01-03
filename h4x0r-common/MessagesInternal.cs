@@ -21,6 +21,9 @@ public enum MessageContainer : byte
  UpdateKnownAddressMessage = 8,
  NodeConnectMessage = 9,
  NodeConnectResultMessage = 10,
+ BlackSphereSoftwareMessage = 11,
+ PurchaseSoftwareMessage = 12,
+ PurchaseSoftwareResultMessage = 13,
 };
 
 public enum CreateAccountResult : sbyte
@@ -36,7 +39,7 @@ public enum LoginResult : sbyte
  Banned = 2,
 };
 
-public enum NodeType : sbyte
+public enum TypeNode : sbyte
 {
  Invalid = -1,
  Gateway = 0,
@@ -53,6 +56,13 @@ public enum NodeConnectResult : sbyte
  Success = 0,
  Timeout = 1,
  ConnectionRejected = 2,
+};
+
+public enum PurchaseSoftwareResult : sbyte
+{
+ Success = 0,
+ InsufficientFunds = 1,
+ InsufficientRAM = 2,
 };
 
 public struct MessageBase : IFlatbufferObject
@@ -304,12 +314,12 @@ public struct UpdateKnownAddressMessage : IFlatbufferObject
   public ArraySegment<byte>? GetAddressBytes() { return __p.__vector_as_arraysegment(4); }
   public string Hostname { get { int o = __p.__offset(6); return o != 0 ? __p.__string(o + __p.bb_pos) : null; } }
   public ArraySegment<byte>? GetHostnameBytes() { return __p.__vector_as_arraysegment(6); }
-  public NodeType Type { get { int o = __p.__offset(8); return o != 0 ? (NodeType)__p.bb.GetSbyte(o + __p.bb_pos) : NodeType.Gateway; } }
+  public TypeNode Type { get { int o = __p.__offset(8); return o != 0 ? (TypeNode)__p.bb.GetSbyte(o + __p.bb_pos) : TypeNode.Gateway; } }
 
   public static Offset<UpdateKnownAddressMessage> CreateUpdateKnownAddressMessage(FlatBufferBuilder builder,
       StringOffset addressOffset = default(StringOffset),
       StringOffset hostnameOffset = default(StringOffset),
-      NodeType type = NodeType.Gateway) {
+      TypeNode type = TypeNode.Gateway) {
     builder.StartObject(3);
     UpdateKnownAddressMessage.AddHostname(builder, hostnameOffset);
     UpdateKnownAddressMessage.AddAddress(builder, addressOffset);
@@ -320,7 +330,7 @@ public struct UpdateKnownAddressMessage : IFlatbufferObject
   public static void StartUpdateKnownAddressMessage(FlatBufferBuilder builder) { builder.StartObject(3); }
   public static void AddAddress(FlatBufferBuilder builder, StringOffset addressOffset) { builder.AddOffset(0, addressOffset.Value, 0); }
   public static void AddHostname(FlatBufferBuilder builder, StringOffset hostnameOffset) { builder.AddOffset(1, hostnameOffset.Value, 0); }
-  public static void AddType(FlatBufferBuilder builder, NodeType type) { builder.AddSbyte(2, (sbyte)type, 0); }
+  public static void AddType(FlatBufferBuilder builder, TypeNode type) { builder.AddSbyte(2, (sbyte)type, 0); }
   public static Offset<UpdateKnownAddressMessage> EndUpdateKnownAddressMessage(FlatBufferBuilder builder) {
     int o = builder.EndObject();
     return new Offset<UpdateKnownAddressMessage>(o);
@@ -383,6 +393,75 @@ public struct NodeConnectResultMessage : IFlatbufferObject
   public static Offset<NodeConnectResultMessage> EndNodeConnectResultMessage(FlatBufferBuilder builder) {
     int o = builder.EndObject();
     return new Offset<NodeConnectResultMessage>(o);
+  }
+};
+
+public struct BlackSphereSoftwareMessage : IFlatbufferObject
+{
+  private Table __p;
+  public ByteBuffer ByteBuffer { get { return __p.bb; } }
+  public static BlackSphereSoftwareMessage GetRootAsBlackSphereSoftwareMessage(ByteBuffer _bb) { return GetRootAsBlackSphereSoftwareMessage(_bb, new BlackSphereSoftwareMessage()); }
+  public static BlackSphereSoftwareMessage GetRootAsBlackSphereSoftwareMessage(ByteBuffer _bb, BlackSphereSoftwareMessage obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
+  public void __init(int _i, ByteBuffer _bb) { __p.bb_pos = _i; __p.bb = _bb; }
+  public BlackSphereSoftwareMessage __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+
+
+  public static void StartBlackSphereSoftwareMessage(FlatBufferBuilder builder) { builder.StartObject(0); }
+  public static Offset<BlackSphereSoftwareMessage> EndBlackSphereSoftwareMessage(FlatBufferBuilder builder) {
+    int o = builder.EndObject();
+    return new Offset<BlackSphereSoftwareMessage>(o);
+  }
+};
+
+public struct PurchaseSoftwareMessage : IFlatbufferObject
+{
+  private Table __p;
+  public ByteBuffer ByteBuffer { get { return __p.bb; } }
+  public static PurchaseSoftwareMessage GetRootAsPurchaseSoftwareMessage(ByteBuffer _bb) { return GetRootAsPurchaseSoftwareMessage(_bb, new PurchaseSoftwareMessage()); }
+  public static PurchaseSoftwareMessage GetRootAsPurchaseSoftwareMessage(ByteBuffer _bb, PurchaseSoftwareMessage obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
+  public void __init(int _i, ByteBuffer _bb) { __p.bb_pos = _i; __p.bb = _bb; }
+  public PurchaseSoftwareMessage __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+
+  public sbyte Software { get { int o = __p.__offset(4); return o != 0 ? __p.bb.GetSbyte(o + __p.bb_pos) : (sbyte)0; } }
+
+  public static Offset<PurchaseSoftwareMessage> CreatePurchaseSoftwareMessage(FlatBufferBuilder builder,
+      sbyte software = 0) {
+    builder.StartObject(1);
+    PurchaseSoftwareMessage.AddSoftware(builder, software);
+    return PurchaseSoftwareMessage.EndPurchaseSoftwareMessage(builder);
+  }
+
+  public static void StartPurchaseSoftwareMessage(FlatBufferBuilder builder) { builder.StartObject(1); }
+  public static void AddSoftware(FlatBufferBuilder builder, sbyte software) { builder.AddSbyte(0, software, 0); }
+  public static Offset<PurchaseSoftwareMessage> EndPurchaseSoftwareMessage(FlatBufferBuilder builder) {
+    int o = builder.EndObject();
+    return new Offset<PurchaseSoftwareMessage>(o);
+  }
+};
+
+public struct PurchaseSoftwareResultMessage : IFlatbufferObject
+{
+  private Table __p;
+  public ByteBuffer ByteBuffer { get { return __p.bb; } }
+  public static PurchaseSoftwareResultMessage GetRootAsPurchaseSoftwareResultMessage(ByteBuffer _bb) { return GetRootAsPurchaseSoftwareResultMessage(_bb, new PurchaseSoftwareResultMessage()); }
+  public static PurchaseSoftwareResultMessage GetRootAsPurchaseSoftwareResultMessage(ByteBuffer _bb, PurchaseSoftwareResultMessage obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
+  public void __init(int _i, ByteBuffer _bb) { __p.bb_pos = _i; __p.bb = _bb; }
+  public PurchaseSoftwareResultMessage __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
+
+  public PurchaseSoftwareResult Success { get { int o = __p.__offset(4); return o != 0 ? (PurchaseSoftwareResult)__p.bb.GetSbyte(o + __p.bb_pos) : PurchaseSoftwareResult.Success; } }
+
+  public static Offset<PurchaseSoftwareResultMessage> CreatePurchaseSoftwareResultMessage(FlatBufferBuilder builder,
+      PurchaseSoftwareResult success = PurchaseSoftwareResult.Success) {
+    builder.StartObject(1);
+    PurchaseSoftwareResultMessage.AddSuccess(builder, success);
+    return PurchaseSoftwareResultMessage.EndPurchaseSoftwareResultMessage(builder);
+  }
+
+  public static void StartPurchaseSoftwareResultMessage(FlatBufferBuilder builder) { builder.StartObject(1); }
+  public static void AddSuccess(FlatBufferBuilder builder, PurchaseSoftwareResult success) { builder.AddSbyte(0, (sbyte)success, 0); }
+  public static Offset<PurchaseSoftwareResultMessage> EndPurchaseSoftwareResultMessage(FlatBufferBuilder builder) {
+    int o = builder.EndObject();
+    return new Offset<PurchaseSoftwareResultMessage>(o);
   }
 };
 

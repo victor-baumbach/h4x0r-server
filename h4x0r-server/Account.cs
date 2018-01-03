@@ -7,7 +7,7 @@ namespace h4x0r
     {
         static public Account Create(string username, string email, string password)
         {
-            Node node = Node.Create(Node.Type.Gateway);
+            Node node = Node.Create(Common.NodeType.Gateway);
 
             Account account = new Account(
                 username,

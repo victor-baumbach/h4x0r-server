@@ -11,7 +11,10 @@ union MessageContainer
 	UpdateReputationMessage,
 	UpdateKnownAddressMessage,
 	NodeConnectMessage,
-	NodeConnectResultMessage
+	NodeConnectResultMessage,
+	BlackSphereSoftwareMessage,
+	PurchaseSoftwareMessage,
+	PurchaseSoftwareResultMessage
 }
 
 table MessageBase 
@@ -70,7 +73,7 @@ table UpdateReputationMessage
 }
 
 // Must be kept in sync with the enum in Node.cs
-enum NodeType : byte 
+enum TypeNode : byte 
 {
 	Invalid = -1,
 	Gateway = 0,
@@ -88,7 +91,7 @@ table UpdateKnownAddressMessage
 {
 	address:string; 
 	hostname:string;
-	type:NodeType;
+	type:TypeNode;
 }
 
 // Sent by the client.
@@ -125,7 +128,7 @@ table BlackSphereSoftwareMessage
 // Sent by the client.
 table PurchaseSoftwareMessage
 {
-	software:int;
+	software:byte;
 }
 
 // Must be kept in sync with the enum in Messages.cs
@@ -141,7 +144,7 @@ enum PurchaseSoftwareResult : byte
 // the player's node.
 table PurchaseSoftwareResultMessage
 {
-	success:PurchaseResult;
+	success:PurchaseSoftwareResult;
 }
 
 root_type MessageBase;
