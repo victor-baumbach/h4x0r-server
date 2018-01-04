@@ -11,7 +11,8 @@ namespace h4x0r
 			CanBeDeleted = Permission.LocalOnly;
 			CanBeExecuted = Permission.LocalOnly;
 			EncryptionLevel = 0;
-			Size = 1;
+			MemoryUsage = 1;
+            DiskSpaceUsage = 1;
 			Unique = false;
             Visible = true;
             SingleUse = false;
@@ -110,7 +111,8 @@ namespace h4x0r
 		public Permission CanBeDeleted { get; set; }
 		public int EncryptionLevel { get; set; }
 		public bool Unique { get; set; }
-		public int Size { get; set; }
+		public int DiskSpaceUsage { get; set; }
+        public int MemoryUsage { get; set; }
         public bool Visible { get; set; }
         public bool SingleUse { get; set; }
         public bool Upgradeable { get; set; }

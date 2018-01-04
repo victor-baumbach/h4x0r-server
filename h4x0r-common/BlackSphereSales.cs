@@ -56,8 +56,6 @@ namespace h4x0r
             public string Name { get; set; }
             public File.Type Type { get; set; }
             public int Price { get; set; }
-            public int HDD { get; set; }
-            public int RAM { get; set; }
         }
 
         public Dictionary<File.Type, SoftwareEntry> Software;

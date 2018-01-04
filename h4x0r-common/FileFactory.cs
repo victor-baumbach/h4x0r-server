@@ -1,8 +1,8 @@
 ﻿namespace h4x0r
 {
-    class FileFactory
+    public class FileFactory
     {
-        static File Create(File.Type type)
+        static public File Create(File.Type type)
         {
             File file = new File();
 
@@ -39,7 +39,8 @@
                     file.Name = "proxy_server";
                     file.CanBeExecuted = File.Permission.Never;
                     file.CanBeDeleted = File.Permission.Never;
-                    file.Size = 0;
+                    file.MemoryUsage = 0;
+                    file.DiskSpaceUsage = 0;
                     file.Visible = false;
                     break;
 
