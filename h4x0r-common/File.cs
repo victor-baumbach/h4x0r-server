@@ -31,13 +31,25 @@ namespace h4x0r
             Proxy,
 			NoiseWall,
 			QuantumGate,
+            ServiceHTTP,
+            ServiceFTP,
+            ServiceSSH,
+            ServiceSMTP,
+            ServiceDatabase,
 
             // Icebreaker
             NodeAnalyser,
             Cracker,
 			Fracter,
+            SSHTunnel,
 			ProxyBypasser,
 			FeedbackLoop,
+            ExploitHTTP,
+            ExploitFTP,
+            ExploitSSH,
+            ExploitSMTP,
+            ExploitDatabase,
+            Siphon,
 
             // Utility
             Tracer,
@@ -47,9 +59,7 @@ namespace h4x0r
 
             // Viruses
             MinerVirus,
-            FeedbackVirus,
-
-            Count,
+            FeedbackVirus
         }
 		
 		public enum Permission
