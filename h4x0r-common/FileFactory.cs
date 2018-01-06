@@ -1,4 +1,6 @@
-﻿namespace h4x0r
+﻿using System.Diagnostics;
+
+namespace h4x0r
 {
     public class FileFactory
     {
@@ -52,12 +54,33 @@
                     file.Name = "quantum_gate";
                     break;
 
+                case File.Type.ServiceHTTP:
+                    file.Name = "service_http";
+                    break;
+
+                case File.Type.ServiceFTP:
+                    file.Name = "service_ftp";
+                    break;
+
+                case File.Type.ServiceSSH:
+                    file.Name = "service_ssh";
+                    break;
+
+                case File.Type.ServiceSMTP:
+                    file.Name = "service_smtp";
+                    break;
+
+                case File.Type.ServiceDatabase:
+                    file.Name = "service_database";
+                    break;
+
                 /////////////////////////////////////////////////////////
                 // Icebreakers
                 /////////////////////////////////////////////////////////
 
                 case File.Type.NodeAnalyser:
                     file.Name = "node_analyser";
+                    file.DiskSpaceUsage = 5;
                     break;
 
                 case File.Type.Cracker:
@@ -68,12 +91,40 @@
                     file.Name = "fracter";
                     break;
 
+                case File.Type.SSHTunnel:
+                    file.Name = "ssh_tunnel";
+                    break;
+
                 case File.Type.ProxyBypasser:
                     file.Name = "proxy_bypasser";
                     break;
 
                 case File.Type.FeedbackLoop:
                     file.Name = "feedback_loop";
+                    break;
+
+                case File.Type.ExploitHTTP:
+                    file.Name = "exploit_http";
+                    break;
+
+                case File.Type.ExploitFTP:
+                    file.Name = "exploit_ftp";
+                    break;
+
+                case File.Type.ExploitSSH:
+                    file.Name = "exploit_ssh";
+                    break;
+
+                case File.Type.ExploitSMTP:
+                    file.Name = "exploit_smtp";
+                    break;
+
+                case File.Type.ExploitDatabase:
+                    file.Name = "exploit_database";
+                    break;
+
+                case File.Type.Siphon:
+                    file.Name = "siphon";
                     break;
 
                 /////////////////////////////////////////////////////////
@@ -111,6 +162,10 @@
                 case File.Type.FeedbackVirus:
                     file.Name = "feedback_virus";
                     file.CanBeExecuted = File.Permission.RemoteOnly;
+                    break;
+
+                default:
+                    Debug.Assert(false);
                     break;
             }
 

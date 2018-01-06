@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "h4x0r-server", "h4x0r-server\h4x0r-server.csproj", "{ABCEAD31-591A-4C54-866B-70379F9DC9FB}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -9,6 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "h4x0r-server", "h4x0r-serve
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "h4x0r-common", "h4x0r-common\h4x0r-common.csproj", "{572795FB-FA77-4B93-9C81-DE9872D4C5F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "h4x0r-unittest", "h4x0r-unittest\h4x0r-unittest.csproj", "{78A957D6-AD0D-4FA6-9B5C-705810244B28}"
+	ProjectSection(ProjectDependencies) = postProject
+		{ABCEAD31-591A-4C54-866B-70379F9DC9FB} = {ABCEAD31-591A-4C54-866B-70379F9DC9FB}
+		{572795FB-FA77-4B93-9C81-DE9872D4C5F9} = {572795FB-FA77-4B93-9C81-DE9872D4C5F9}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,8 +30,15 @@ Global
 		{572795FB-FA77-4B93-9C81-DE9872D4C5F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{572795FB-FA77-4B93-9C81-DE9872D4C5F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{572795FB-FA77-4B93-9C81-DE9872D4C5F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78A957D6-AD0D-4FA6-9B5C-705810244B28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78A957D6-AD0D-4FA6-9B5C-705810244B28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78A957D6-AD0D-4FA6-9B5C-705810244B28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78A957D6-AD0D-4FA6-9B5C-705810244B28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0CDF7415-4B30-486E-8590-9ADACBA671DB}
 	EndGlobalSection
 EndGlobal

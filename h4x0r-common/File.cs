@@ -119,15 +119,18 @@ namespace h4x0r
 
         private void UpdateSystemName()
         {
-            if (Version < 1)
+            if (m_Name != null)
             {
-                m_SystemName = m_Name.ToLower();
-            }
-            else
-            {
-                int majorVersion = Version / 10;
-                int minorVersion = Version % 10;
-                m_SystemName = String.Format("{0}_{1}_{2}", m_Name.ToLower(), majorVersion, minorVersion);
+                if (Version < 1)
+                {
+                    m_SystemName = m_Name.ToLower();
+                }
+                else
+                {
+                    int majorVersion = Version / 10;
+                    int minorVersion = Version % 10;
+                    m_SystemName = String.Format("{0}_{1}_{2}", m_Name.ToLower(), majorVersion, minorVersion);
+                }
             }
         }
 

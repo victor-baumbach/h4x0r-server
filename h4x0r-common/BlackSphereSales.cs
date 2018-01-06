@@ -8,51 +8,33 @@ namespace h4x0r
         {
             Software = new Dictionary<File.Type, SoftwareEntry>();
 
-            SoftwareEntry nodeAnalyser = new SoftwareEntry();
-            nodeAnalyser.Name = "Node analyser";
-            nodeAnalyser.Type = File.Type.NodeAnalyser;
-            nodeAnalyser.Price = 100;
-            Software[File.Type.NodeAnalyser] = nodeAnalyser;
-
-            SoftwareEntry cracker = new SoftwareEntry();
-            cracker.Name = "Cracker";
-            cracker.Type = File.Type.Cracker;
-            cracker.Price = 500;
-            Software[File.Type.Cracker] = cracker;
-
-            SoftwareEntry fracter = new SoftwareEntry();
-            fracter.Name = "Fracter";
-            fracter.Type = File.Type.Fracter;
-            fracter.Price = 10000;
-            Software[File.Type.Fracter] = fracter;
-
-            SoftwareEntry proxyBypasser = new SoftwareEntry();
-            proxyBypasser.Name = "Proxy bypasser";
-            proxyBypasser.Type = File.Type.ProxyBypasser;
-            proxyBypasser.Price = 20000;
-            Software[File.Type.ProxyBypasser] = proxyBypasser;
-
-            SoftwareEntry feedbackLoop = new SoftwareEntry();
-            feedbackLoop.Name = "Feedback loop";
-            feedbackLoop.Type = File.Type.FeedbackLoop;
-            feedbackLoop.Price = 20000;
-            Software[File.Type.FeedbackLoop] = feedbackLoop;
-
-            SoftwareEntry minerVirus = new SoftwareEntry();
-            minerVirus.Name = "Miner virus";
-            minerVirus.Type = File.Type.MinerVirus;
-            minerVirus.Price = 1000;
-            Software[File.Type.MinerVirus] = minerVirus;
-
-            SoftwareEntry feedbackVirus = new SoftwareEntry();
-            feedbackVirus.Name = "Feedback virus";
-            feedbackVirus.Type = File.Type.FeedbackVirus;
-            feedbackVirus.Price = 20000;
-            Software[File.Type.FeedbackVirus] = feedbackVirus;
+            Software[File.Type.Cracker] = new SoftwareEntry("Cracker", File.Type.Cracker, 0);
+            Software[File.Type.NodeAnalyser] = new SoftwareEntry("Node analyser", File.Type.NodeAnalyser, 1000);
+            Software[File.Type.VirtualIntelligence] = new SoftwareEntry("Virtual intelligence", File.Type.VirtualIntelligence, 1000);
+            Software[File.Type.Siphon] = new SoftwareEntry("Siphon", File.Type.Siphon, 5000);
+            Software[File.Type.MinerVirus] = new SoftwareEntry("Miner virus", File.Type.MinerVirus, 5000);
+            Software[File.Type.Fracter] = new SoftwareEntry("Fracter", File.Type.Fracter, 20000);
+            Software[File.Type.ProxyBypasser] = new SoftwareEntry("Proxy bypasser", File.Type.ProxyBypasser, 50000);
+            Software[File.Type.SSHTunnel] = new SoftwareEntry("SSH Tunnel", File.Type.SSHTunnel, 100000);
+            Software[File.Type.ExploitHTTP] = new SoftwareEntry("HTTP exploit", File.Type.ExploitHTTP, 250000);
+            Software[File.Type.ExploitFTP] = new SoftwareEntry("FTP exploit", File.Type.ExploitFTP, 250000);
+            Software[File.Type.ExploitSSH] = new SoftwareEntry("SSH exploit", File.Type.ExploitSSH, 250000);
+            Software[File.Type.ExploitSMTP] = new SoftwareEntry("SMTP exploit", File.Type.ExploitSMTP, 250000);
+            Software[File.Type.ExploitDatabase] = new SoftwareEntry("Database exploit", File.Type.ExploitDatabase, 250000);
+            Software[File.Type.FeedbackLoop] = new SoftwareEntry("Feedback loop", File.Type.FeedbackLoop, 500000);
+            Software[File.Type.FeedbackVirus] = new SoftwareEntry("Feedback virus", File.Type.FeedbackVirus, 500000);
+            Software[File.Type.TraceKill] = new SoftwareEntry("Trace kill", File.Type.TraceKill, 1000000);
         }
 
         public class SoftwareEntry
         {
+            public SoftwareEntry(string name, File.Type type, int price)
+            {
+                Name = name;
+                Type = type;
+                Price = price;
+            }
+
             public string Name { get; set; }
             public File.Type Type { get; set; }
             public int Price { get; set; }
