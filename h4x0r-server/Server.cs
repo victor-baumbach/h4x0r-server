@@ -14,6 +14,8 @@ namespace h4x0r
         {
             Logger.Write(Logger.Level.Info, "Server initialising...");
 
+            Run.NetworkGenerator run = new Run.NetworkGenerator(new Run.NetworkGenerator.Settings());
+
             m_Database = new Database();
             m_Clients = new List<Client>();
             m_SocketToClient = new Dictionary<Socket, Client>();
