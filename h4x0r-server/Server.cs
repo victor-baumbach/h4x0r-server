@@ -122,6 +122,19 @@ namespace h4x0r
 
                         break;
                     }
+
+                case MessageContainer.PurchaseSoftwareMessage:
+                    {
+
+                        PurchaseSoftwareMessage? message = messageBase.Data<PurchaseSoftwareMessage>();
+                        if (message == null) return false;
+
+                        Client client = m_SocketToClient[handler];
+                        File.Type softwareToBuy = (File.Type)message.Value.Software;
+                        Messages.PurchaseSoftwareResult result = TryPurchaseSoftware(client, softwareToBuy);
+                        AsyncSocketListener.Send(handler, Messages.PurchaseSoftwareResultMessage(result));
+                        break;
+                    }
                 default:
                     return false;
             }
@@ -225,6 +238,11 @@ namespace h4x0r
             {
                 throw;
             }
+        }
+
+        private static Messages.PurchaseSoftwareResult TryPurchaseSoftware(Client client, File.Type softwareToBuy)
+        {
+            return Messages.PurchaseSoftwareResult.Success;
         }
 
         public delegate void ClientAddedDelegate(Client client);

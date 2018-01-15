@@ -129,7 +129,8 @@ enum PurchaseSoftwareResult : byte
 	Success = 0,
 	InsufficientFunds,
 	InsufficientRAM,
-	InvalidRequest // Not a valid file which can be purchased.
+	InvalidRequest, // Not a valid file which can be purchased.
+	AlreadyPurchased
 }
 
 // Sent by the server.
