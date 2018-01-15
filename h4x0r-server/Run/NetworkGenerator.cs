@@ -21,10 +21,10 @@ namespace h4x0r.Run
         public enum LinkDirections
         {
             None = 0,
-            Left,
-            Right,
-            Up,
-            Down,
+            Left = 1,
+            Right = 2,
+            Up = 4,
+            Down = 8,
             All = Left | Right | Up | Down
         }
 
@@ -33,7 +33,7 @@ namespace h4x0r.Run
             public Node(int x, int y)
             {
                 NodeType = NodeType.Generic;
-                LinkDirections = LinkDirections.All;
+                LinkDirections = LinkDirections.None;
                 X = x;
                 Y = y;
             }
@@ -43,6 +43,17 @@ namespace h4x0r.Run
             public int X { get; set; }
             public int Y { get; set; }
         }
+
+        public Network(NetworkGenerator.Settings generatorSettings)
+        {
+            m_NetworkGenerator = new NetworkGenerator(generatorSettings);
+            Size = generatorSettings.Size;
+            Nodes = m_NetworkGenerator.Nodes;
+        }
+
+        public int Size { get; }
+        public Node[,] Nodes { get; }
+        private NetworkGenerator m_NetworkGenerator;
     }
 
     public class NetworkGenerator
@@ -60,6 +71,7 @@ namespace h4x0r.Run
         public NetworkGenerator(Settings settings)
         {
             m_RandomGenerator = new Random();
+            m_Settings = settings;
 
             // Create a square network.
             Nodes = new Network.Node[settings.Size, settings.Size];
@@ -98,31 +110,73 @@ namespace h4x0r.Run
                 }
             }
 
-            for (int y = 0; y < settings.Size; ++y)
+            List<Network.Node> ingressNodesToProcess = new List<Network.Node>();
+            ingressNodesToProcess.Add(ingressNode);
+            List<Network.Node> egressNodesToProcess = new List<Network.Node>();
+            egressNodesToProcess.Add(egressNode);
+            while (undiscoveredSet.Count > 0 && ingressNodesToProcess.Count != 0 && egressNodesToProcess.Count != 0)
             {
-                for (int x = 0; x < settings.Size; ++x)
-                {
-                    Network.Node node = Nodes[x, y];
-                    if (node.NodeType == Network.NodeType.Egress)
-                    {
-                        Console.Write("E ");
-                    }
-                    else if (node.NodeType == Network.NodeType.Ingress)
-                    {
-                        Console.Write("I ");
-                    }
-                    else
-                    {
-                        Console.Write(". ");
-                    }
-                }
-                Console.WriteLine();
+                ProcessNode(ingressNodesToProcess, ingressSet, undiscoveredSet);
+                ProcessNode(egressNodesToProcess, egressSet, undiscoveredSet);
+            }
+        }
+
+        private void ProcessNode(List<Network.Node> setToProcess, List<Network.Node> setToAddTo, List<Network.Node> undiscoveredSet)
+        {
+            if (setToProcess.Count == 0)
+            {
+                return;
             }
 
+            Network.Node node = setToProcess[0];
+            setToProcess.RemoveAt(0);
+
+            // TODO: Ensure all nodes have at least one link established.
+
+            if (m_RandomGenerator.Next() % 2 == 0 && (node.X - 1) >= 0 && undiscoveredSet.Contains(Nodes[node.X - 1, node.Y]))
+            {
+                Network.Node otherNode = Nodes[node.X - 1, node.Y];
+                node.LinkDirections |= Network.LinkDirections.Left;
+                otherNode.LinkDirections |= Network.LinkDirections.Right;
+                undiscoveredSet.Remove(otherNode);
+                setToAddTo.Add(otherNode);
+                setToProcess.Add(otherNode);
+            }
+
+            if (m_RandomGenerator.Next() % 2 == 0 && (node.X + 1) < m_Settings.Size && undiscoveredSet.Contains(Nodes[node.X + 1, node.Y]))
+            {
+                Network.Node otherNode = Nodes[node.X + 1, node.Y];
+                node.LinkDirections |= Network.LinkDirections.Right;
+                otherNode.LinkDirections |= Network.LinkDirections.Left;
+                undiscoveredSet.Remove(otherNode);
+                setToAddTo.Add(otherNode);
+                setToProcess.Add(otherNode);
+            }
+
+            if (m_RandomGenerator.Next() % 2 == 0 && (node.Y - 1) >= 0 && undiscoveredSet.Contains(Nodes[node.X, node.Y - 1]))
+            {
+                Network.Node otherNode = Nodes[node.X, node.Y - 1];
+                node.LinkDirections |= Network.LinkDirections.Up;
+                otherNode.LinkDirections |= Network.LinkDirections.Down;
+                undiscoveredSet.Remove(otherNode);
+                setToAddTo.Add(otherNode);
+                setToProcess.Add(otherNode);
+            }
+
+            if (m_RandomGenerator.Next() % 2 == 0 && (node.Y + 1) < m_Settings.Size && undiscoveredSet.Contains(Nodes[node.X, node.Y + 1]))
+            {
+                Network.Node otherNode = Nodes[node.X, node.Y + 1];
+                node.LinkDirections |= Network.LinkDirections.Down;
+                otherNode.LinkDirections |= Network.LinkDirections.Up;
+                undiscoveredSet.Remove(otherNode);
+                setToAddTo.Add(otherNode);
+                setToProcess.Add(otherNode);
+            }
         }
 
         public Network.Node[,] Nodes { get; set; }
 
         private Random m_RandomGenerator;
+        private Settings m_Settings;
     }
 }

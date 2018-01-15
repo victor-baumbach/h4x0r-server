@@ -77,6 +77,12 @@
     <Compile Include="Client.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="Run\NetworkGenerator.cs" />
+    <Compile Include="Run\NetworkInspector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Run\NetworkInspector.Designer.cs">
+      <DependentUpon>NetworkInspector.cs</DependentUpon>
+    </Compile>
     <Compile Include="ServerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -89,6 +95,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server.cs" />
+    <EmbeddedResource Include="Run\NetworkInspector.resx">
+      <DependentUpon>NetworkInspector.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ServerForm.resx">
       <DependentUpon>ServerForm.cs</DependentUpon>
     </EmbeddedResource>

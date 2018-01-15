@@ -14,7 +14,7 @@ namespace h4x0r
         {
             Logger.Write(Logger.Level.Info, "Server initialising...");
 
-            Run.NetworkGenerator run = new Run.NetworkGenerator(new Run.NetworkGenerator.Settings());
+            Run.Network run = new Run.Network(new Run.NetworkGenerator.Settings());
 
             m_Database = new Database();
             m_Clients = new List<Client>();
@@ -24,6 +24,10 @@ namespace h4x0r
             AsyncSocketListener.OnConnectionLost = OnConnectionLost;
             AsyncSocketListener.OnMessageReceived = OnMessageReceived;
             AsyncSocketListener.StartListening();
+
+            m_NetworkInspector = new Run.NetworkInspector();
+            m_NetworkInspector.Show();
+            m_NetworkInspector.Inspect(run);
 
             m_Initialised = true;
         }
@@ -245,5 +249,6 @@ namespace h4x0r
         private static List<Client> m_Clients;
         private static Dictionary<Socket, Client> m_SocketToClient;
         private static Database m_Database;
+        private static Run.NetworkInspector m_NetworkInspector;
     }
 }
