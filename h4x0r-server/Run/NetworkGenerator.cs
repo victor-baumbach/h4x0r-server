@@ -75,21 +75,20 @@ namespace h4x0r.Run
 
             // Create a square network.
             Nodes = new Network.Node[settings.Size, settings.Size];
+            DiscoveredState = new bool[settings.Size, settings.Size];
             for (int x = 0; x < settings.Size; x++)
             {
                 for (int y = 0; y < settings.Size; y++)
                 {
                     Nodes[x, y] = new Network.Node(x, y);
+                    DiscoveredState[x, y] = false;
                 }
             }
 
-            // There are three sets, as the network gets generated the nodes will be 
-            // moved from the undiscoveredSet to either the ingressSet or the egressSet.
             // The algorithm is based on the answer to the following question in StackOverflow:
             // https://stackoverflow.com/questions/22305644/how-to-generate-a-maze-with-more-than-one-success-full-path
             List<Network.Node> ingressSet = new List<Network.Node>();
             List<Network.Node> egressSet = new List<Network.Node>();
-            List<Network.Node> undiscoveredSet = new List<Network.Node>();
 
             // Pick a random node on the left edge of the network as the ingress node.
             Network.Node ingressNode = Nodes[0, m_RandomGenerator.Next() % settings.Size];
@@ -101,27 +100,18 @@ namespace h4x0r.Run
             egressNode.NodeType = Network.NodeType.Egress;
             egressSet.Add(egressNode);
 
-            // Add all other nodes to the undiscoveredSet.
-            foreach (Network.Node node in Nodes)
-            {
-                if (node != ingressNode && node != egressNode)
-                {
-                    undiscoveredSet.Add(node);
-                }
-            }
-
             List<Network.Node> ingressNodesToProcess = new List<Network.Node>();
             ingressNodesToProcess.Add(ingressNode);
             List<Network.Node> egressNodesToProcess = new List<Network.Node>();
             egressNodesToProcess.Add(egressNode);
-            while (undiscoveredSet.Count > 0 && ingressNodesToProcess.Count != 0 && egressNodesToProcess.Count != 0)
+            while (ingressNodesToProcess.Count != 0 && egressNodesToProcess.Count != 0)
             {
-                ProcessNode(ingressNodesToProcess, ingressSet, undiscoveredSet);
-                ProcessNode(egressNodesToProcess, egressSet, undiscoveredSet);
+                ProcessNode(ingressNodesToProcess, ingressSet);
+                ProcessNode(egressNodesToProcess, egressSet);
             }
         }
 
-        private void ProcessNode(List<Network.Node> setToProcess, List<Network.Node> setToAddTo, List<Network.Node> undiscoveredSet)
+        private void ProcessNode(List<Network.Node> setToProcess, List<Network.Node> setToAddTo)
         {
             if (setToProcess.Count == 0)
             {
@@ -132,49 +122,78 @@ namespace h4x0r.Run
             setToProcess.RemoveAt(0);
 
             // TODO: Ensure all nodes have at least one link established.
+            Network.LinkDirections directions = GenerateLinkDirections(node);
 
-            if (m_RandomGenerator.Next() % 2 == 0 && (node.X - 1) >= 0 && undiscoveredSet.Contains(Nodes[node.X - 1, node.Y]))
+            if ((directions & Network.LinkDirections.Left) != 0)
             {
                 Network.Node otherNode = Nodes[node.X - 1, node.Y];
                 node.LinkDirections |= Network.LinkDirections.Left;
                 otherNode.LinkDirections |= Network.LinkDirections.Right;
-                undiscoveredSet.Remove(otherNode);
+                DiscoveredState[otherNode.X, otherNode.Y] = true;
                 setToAddTo.Add(otherNode);
                 setToProcess.Add(otherNode);
             }
 
-            if (m_RandomGenerator.Next() % 2 == 0 && (node.X + 1) < m_Settings.Size && undiscoveredSet.Contains(Nodes[node.X + 1, node.Y]))
+            if ((directions & Network.LinkDirections.Right) != 0)
             {
                 Network.Node otherNode = Nodes[node.X + 1, node.Y];
                 node.LinkDirections |= Network.LinkDirections.Right;
                 otherNode.LinkDirections |= Network.LinkDirections.Left;
-                undiscoveredSet.Remove(otherNode);
+                DiscoveredState[otherNode.X, otherNode.Y] = true;
                 setToAddTo.Add(otherNode);
                 setToProcess.Add(otherNode);
             }
 
-            if (m_RandomGenerator.Next() % 2 == 0 && (node.Y - 1) >= 0 && undiscoveredSet.Contains(Nodes[node.X, node.Y - 1]))
+            if ((directions & Network.LinkDirections.Up) != 0)
             {
                 Network.Node otherNode = Nodes[node.X, node.Y - 1];
                 node.LinkDirections |= Network.LinkDirections.Up;
                 otherNode.LinkDirections |= Network.LinkDirections.Down;
-                undiscoveredSet.Remove(otherNode);
+                DiscoveredState[otherNode.X, otherNode.Y] = true;
                 setToAddTo.Add(otherNode);
                 setToProcess.Add(otherNode);
             }
 
-            if (m_RandomGenerator.Next() % 2 == 0 && (node.Y + 1) < m_Settings.Size && undiscoveredSet.Contains(Nodes[node.X, node.Y + 1]))
+            if ((directions & Network.LinkDirections.Down) != 0)
             {
                 Network.Node otherNode = Nodes[node.X, node.Y + 1];
                 node.LinkDirections |= Network.LinkDirections.Down;
                 otherNode.LinkDirections |= Network.LinkDirections.Up;
-                undiscoveredSet.Remove(otherNode);
+                DiscoveredState[otherNode.X, otherNode.Y] = true;
                 setToAddTo.Add(otherNode);
                 setToProcess.Add(otherNode);
             }
         }
 
+        // Figure out which directions this node should link to.
+        // Normally a node will already have at least one direction connected (with the exception of ingress and egress nodes).
+        private Network.LinkDirections GenerateLinkDirections(Network.Node node)
+        {
+            Network.LinkDirections directions = Network.LinkDirections.All;
+
+            // Don't consider any pre-existing links to this node.
+            if ((node.LinkDirections & Network.LinkDirections.Left) != 0) directions &= ~Network.LinkDirections.Left;
+            if ((node.LinkDirections & Network.LinkDirections.Right) != 0) directions &= ~Network.LinkDirections.Right;
+            if ((node.LinkDirections & Network.LinkDirections.Up) != 0) directions &= ~Network.LinkDirections.Up;
+            if ((node.LinkDirections & Network.LinkDirections.Down) != 0) directions &= ~Network.LinkDirections.Down;
+
+            // If we are at the edge of the network, don't consider links which would take us out of bounds.
+            if (node.X == 0) directions &= ~Network.LinkDirections.Left;
+            else if (node.X == m_Settings.Size - 1) directions &= ~Network.LinkDirections.Right;
+            if (node.Y == 0) directions &= ~Network.LinkDirections.Up;
+            else if (node.Y == m_Settings.Size - 1) directions &= ~Network.LinkDirections.Down;
+
+            // Skip potential links to already discovered nodes.
+            if ((directions & Network.LinkDirections.Left) != 0 && DiscoveredState[node.X - 1, node.Y]) directions &= ~Network.LinkDirections.Left;
+            if ((directions & Network.LinkDirections.Right) != 0 && DiscoveredState[node.X + 1, node.Y]) directions &= ~Network.LinkDirections.Right;
+            if ((directions & Network.LinkDirections.Up) != 0 && DiscoveredState[node.X, node.Y - 1]) directions &= ~Network.LinkDirections.Up;
+            if ((directions & Network.LinkDirections.Down) != 0 && DiscoveredState[node.X, node.Y + 1]) directions &= ~Network.LinkDirections.Down;
+
+            return directions;
+        }
+
         public Network.Node[,] Nodes { get; set; }
+        private bool[,] DiscoveredState { get; set; }
 
         private Random m_RandomGenerator;
         private Settings m_Settings;
