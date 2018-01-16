@@ -109,6 +109,8 @@ namespace h4x0r.Run
                 ProcessNode(ingressNodesToProcess, ingressSet);
                 ProcessNode(egressNodesToProcess, egressSet);
             }
+
+            ConnectSets(ingressSet, egressSet);
         }
 
         private void ProcessNode(List<Network.Node> setToProcess, List<Network.Node> setToAddTo)
@@ -189,7 +191,41 @@ namespace h4x0r.Run
             if ((directions & Network.LinkDirections.Up) != 0 && DiscoveredState[node.X, node.Y - 1]) directions &= ~Network.LinkDirections.Up;
             if ((directions & Network.LinkDirections.Down) != 0 && DiscoveredState[node.X, node.Y + 1]) directions &= ~Network.LinkDirections.Down;
 
+            // Randomise new links. Always try to establish at least one.
+            if (directions != Network.LinkDirections.None)
+            {
+                List<Network.LinkDirections> directionsList = new List<Network.LinkDirections>();
+                if ((directions & Network.LinkDirections.Left) != 0) directionsList.Add(Network.LinkDirections.Left);
+                if ((directions & Network.LinkDirections.Right) != 0) directionsList.Add(Network.LinkDirections.Right);
+                if ((directions & Network.LinkDirections.Up) != 0) directionsList.Add(Network.LinkDirections.Up);
+                if ((directions & Network.LinkDirections.Down) != 0) directionsList.Add(Network.LinkDirections.Down);
+
+                ShuffleDirections(ref directionsList);
+
+                directions = Network.LinkDirections.None;
+                directions |= directionsList[0];
+                if (directionsList.Count > 1 && (m_RandomGenerator.Next() % 2) == 0) directions |= directionsList[1];
+            }
+
             return directions;
+        }
+
+        private void ShuffleDirections(ref List<Network.LinkDirections> list)
+        {
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = m_RandomGenerator.Next(n + 1);
+                Network.LinkDirections value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
+        }
+
+        private void ConnectSets(List<Network.Node> ingressSet, List<Network.Node>egressSet)
+        {
+
         }
 
         public Network.Node[,] Nodes { get; set; }
