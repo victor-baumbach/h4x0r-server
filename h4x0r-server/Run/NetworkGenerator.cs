@@ -62,7 +62,7 @@ namespace h4x0r.Run
         {
             public Settings()
             {
-                Size = 8;
+                Size = 10;
             }
 
             public int Size { get; set; }
@@ -116,6 +116,44 @@ namespace h4x0r.Run
             }
 
             ConnectSets(ingressSet, egressSet);
+            PrototypeOutput();
+        }
+
+        private void PrototypeOutput()
+        {
+            for (int x = 0; x < m_Settings.Size; x++)
+            {
+                for (int y = 0; y < m_Settings.Size; y++)
+                {
+                    if (Nodes[x, y].LinkDirections == Network.LinkDirections.All)
+                    {
+                        Console.WriteLine(String.Format("grid_data[{0}][{1}].set_link_directions({2})", x, y, "grid_node_script.GridLinkDirections.All"));
+                    }
+                    else
+                    {
+                        if ((Nodes[x, y].LinkDirections & Network.LinkDirections.Down) > 0)
+                        {
+                            Console.WriteLine(String.Format("grid_data[{0}][{1}].set_link_directions({2})", x, y, "grid_node_script.GridLinkDirections.Down"));
+                        }
+                        if ((Nodes[x, y].LinkDirections & Network.LinkDirections.Left) > 0)
+                        {
+                            Console.WriteLine(String.Format("grid_data[{0}][{1}].set_link_directions({2})", x, y, "grid_node_script.GridLinkDirections.Left"));
+                        }
+                        if ((Nodes[x, y].LinkDirections & Network.LinkDirections.None) > 0)
+                        {
+                            Console.WriteLine(String.Format("grid_data[{0}][{1}].set_link_directions({2})", x, y, "grid_node_script.GridLinkDirections.None"));
+                        }
+                        if ((Nodes[x, y].LinkDirections & Network.LinkDirections.Right) > 0)
+                        {
+                            Console.WriteLine(String.Format("grid_data[{0}][{1}].set_link_directions({2})", x, y, "grid_node_script.GridLinkDirections.Right"));
+                        }
+                        if ((Nodes[x, y].LinkDirections & Network.LinkDirections.Up) > 0)
+                        {
+                            Console.WriteLine(String.Format("grid_data[{0}][{1}].set_link_directions({2})", x, y, "grid_node_script.GridLinkDirections.Up"));
+                        }
+                    }
+                }
+            }
         }
 
         private void ProcessNode(List<Network.Node> setToProcess, List<Network.Node> setToAddTo)
